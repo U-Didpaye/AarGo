@@ -4,7 +4,7 @@ import { generateJourneyPlan } from "@/lib/gemini";
 export async function POST(req: NextRequest) {
   try {
     const body = await req.json();
-    const { prompt, context } = body;
+    const { prompt, context, history } = body;
 
     if (!prompt || typeof prompt !== "string") {
       return NextResponse.json(
@@ -13,7 +13,7 @@ export async function POST(req: NextRequest) {
       );
     }
 
-    const response = await generateJourneyPlan(prompt, context);
+    const response = await generateJourneyPlan(prompt, context, history);
     return NextResponse.json({
       success: true,
       data: response,

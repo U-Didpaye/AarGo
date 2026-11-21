@@ -7,107 +7,126 @@ if (apiKey) {
   genAI = new GoogleGenerativeAI(apiKey);
 }
 
-export const SYSTEM_INSTRUCTION = `You are the AarogyaGo Non-Clinical Journey Assistant for the platform 'AarogyaGo: Healthcare Without Borders' presented at Hack Days @ NFSU Nagpur.
+export const SYSTEM_INSTRUCTION = `You are the AarogyaGo Journey Assistant for 'AarogyaGo: Healthcare Without Borders' (presented at Hack Days @ NFSU Nagpur).
 
-CRITICAL NON-CLINICAL SAFETY MANDATES:
-1. You are strictly a non-clinical medical travel & journey coordinator.
-2. You NEVER diagnose conditions, interpret symptoms, prescribe medication, recommend medical treatments, or provide clinical triage.
-3. If a patient or user asks clinical medical questions, immediately provide a warm, courteous boundary notice: remind them that AarogyaGo specializes exclusively in practical travel logistics, accommodation, language assistance, and hospital visit coordination, and advise them to consult their licensed doctor.
-4. Focus your advice exclusively on:
-   - Practical travel preparation (tickets, transit distance, arrival timing)
-   - Non-clinical documents to bring (government photo ID, past discharge summaries, physical file folders, insurance card, payment modes)
-   - Hospital arrival navigation (locating reception, outstation facilitation counters, wheelchair assistance desks)
-   - Attendant & lodging arrangements (guest houses, Dharmashalas, budget lodging near hospitals)
-   - Language interpreter & local transport coordination
-   - Practical checklist for the patient and companion
+CORE PURPOSE:
+You are an intelligent, friendly, and reassuring medical journey coordinator. You help patients and their companions organize all non-clinical, logistical aspects of planned hospital visits.
 
-OUTPUT FORMAT:
-Provide responses with:
-- Warm, empathetic tone
-- A structured Non-Clinical Checklist with checkboxes
-- Key Logistics Highlights (Travel, Stay, Documents)
-- Tips for the hospital visit day
-- A clear disclaimer: "AarogyaGo coordinates practical visit logistics and does not provide clinical or medical advice."`;
+CRITICAL NON-CLINICAL SAFETY BOUNDARIES:
+1. You are strictly a non-clinical journey coordinator.
+2. You NEVER diagnose medical conditions, interpret symptoms, prescribe medicines, suggest dosages, evaluate medical lab values, or provide clinical triage.
+3. If a user asks medical or clinical questions, provide a warm, courteous boundary notice: explain that AarogyaGo specializes exclusively in practical travel, lodging, documents, and hospital facilitation, and advise them to speak directly with their licensed physician.
+4. Never invent hospital partnerships, pricing, bed availability, transport timetables, or verified clinic claims. Distinguish helpful recommendations from verified hospital facts.
 
-export async function generateJourneyPlan(userPrompt: string, context?: {
-  destinationCity?: string;
-  hospitalName?: string;
-  visitDate?: string;
-  servicesNeeded?: string[];
-}) {
+CONVERSATION & RESPONSE STYLE GUIDELINES:
+1. Be concise, warm, and natural. Never overwhelm the user with enormous unbroken walls of text.
+2. Structure your replies thoughtfully:
+   - Direct, helpful answer first (1-2 sentences).
+   - Clear subheadings (e.g. "### 📁 Documents to Carry" or "### 🏨 Outstation Lodging").
+   - Actionable checklists using Markdown checkbox syntax: '- [ ] Item detail'.
+   - Practical tips for the patient and accompanying family member.
+   - A short, relevant follow-up question at the end to guide the conversation.
+3. Respect journey context:
+   - If the patient has already selected a hospital, destination city, or visit date, acknowledge it and do NOT ask for information you already know.
+   - If critical travel information is missing, ask one simple clarifying question.
+4. Do NOT repeat the initial greeting paragraph in follow-up answers.`;
+
+export interface ChatHistoryItem {
+  role: "user" | "assistant";
+  content: string;
+}
+
+export async function generateJourneyPlan(
+  userPrompt: string,
+  context?: {
+    destinationCity?: string;
+    hospitalName?: string;
+    visitDate?: string;
+    servicesNeeded?: string[];
+  },
+  history?: ChatHistoryItem[]
+) {
   if (!genAI || !apiKey) {
     return generateFallbackPlan(userPrompt, context);
   }
 
   try {
-    // Using gemini-2.5-flash as verified on this API key
     const model = genAI.getGenerativeModel({
       model: "gemini-2.5-flash",
       systemInstruction: SYSTEM_INSTRUCTION,
     });
 
-    const fullPrompt = `User Query / Request:
-"${userPrompt}"
+    // Format previous messages for Gemini multi-turn chat (up to last 10 messages)
+    const formattedHistory = (history || [])
+      .slice(-10)
+      .filter((h) => h.content && h.content.trim() !== "")
+      .map((h) => ({
+        role: h.role === "user" ? ("user" as const) : ("model" as const),
+        parts: [{ text: h.content }],
+      }));
 
-${
-  context
-    ? `Patient Context Details:
-- Destination City: ${context.destinationCity || "Not specified"}
-- Target Hospital: ${context.hospitalName || "General Visit"}
-- Preferred Date: ${context.visitDate || "Upcoming"}
-- Services Requested: ${context.servicesNeeded?.join(", ") || "General coordination"}`
-    : ""
-}
+    // Inject active journey context if present
+    const contextPrefix = context && (context.hospitalName || context.destinationCity || context.visitDate)
+      ? `[Active Journey Context: Hospital: ${context.hospitalName || "Not set"}, City: ${context.destinationCity || "Not set"}, Planned Date: ${context.visitDate || "Not set"}]\n\n`
+      : "";
 
-Please formulate an actionable, structured non-clinical journey preparation guide for this visit.`;
-
-    const result = await model.generateContent(fullPrompt);
-    const response = await result.response;
-    return response.text();
+    if (formattedHistory.length > 0) {
+      const chat = model.startChat({
+        history: formattedHistory,
+      });
+      const result = await chat.sendMessage(contextPrefix + userPrompt);
+      const response = await result.response;
+      return response.text();
+    } else {
+      const fullPrompt = `${contextPrefix}User Query:\n"${userPrompt}"\n\nPlease provide a structured, practical non-clinical response.`;
+      const result = await model.generateContent(fullPrompt);
+      const response = await result.response;
+      return response.text();
+    }
   } catch (error) {
     console.error("Gemini API call failed, using graceful fallback:", error);
     return generateFallbackPlan(userPrompt, context);
   }
 }
 
-export function generateFallbackPlan(userPrompt: string, context?: {
-  destinationCity?: string;
-  hospitalName?: string;
-  visitDate?: string;
-  servicesNeeded?: string[];
-}): string {
+export function generateFallbackPlan(
+  userPrompt: string,
+  context?: {
+    destinationCity?: string;
+    hospitalName?: string;
+    visitDate?: string;
+    servicesNeeded?: string[];
+  }
+): string {
   const city = context?.destinationCity || "your destination";
   const hospital = context?.hospitalName || "the medical center";
   const date = context?.visitDate || "your scheduled date";
 
-  return `### 📋 AarogyaGo Non-Clinical Journey Guide
+  return `### 📋 Practical Visit Preparation Guide
 
 **Destination:** ${hospital} (${city})  
 **Target Window:** ${date}
 
----
+Here are the practical non-clinical steps to organize for your visit:
 
-#### 1. Essential Travel & Transit Checklist
-- [ ] Book return transit (arrive at least 3 hours prior to hospital reporting time).
-- [ ] Arrange dedicated station/airport pickup or pre-book verified app cab.
-- [ ] Note down the hospital's central inquiry desk and emergency entrance landmarks.
+#### 📁 Essential Documents & File Organization
+- [ ] 2 Government-issued photo IDs (Aadhaar / Voter ID / Passport) for patient and attendant.
+- [ ] Chronologically index past discharge summaries and diagnostic scans in a water-resistant folder.
+- [ ] Insurance cards, TPA pre-authorization documents, or corporate policy details.
+- [ ] Keep digital backups scanned on your mobile device.
 
-#### 2. Documentation & Identification (Physical Folder)
-- [ ] Carry 2 government-issued photo IDs (Aadhaar / Voter ID / Passport) for patient and attendant.
-- [ ] Chronologically index all past reports, diagnostic scans (CDs/films), and discharge summaries in a water-resistant folder.
-- [ ] Keep insurance cards, pre-authorization letters, or corporate TPA documents handy.
-- [ ] Keep digital scans backed up securely on your mobile device.
+#### 🚆 Transit & Timing
+- [ ] Plan arrival at least 3 hours before registration counters open.
+- [ ] Pre-book verified local transport or taxi to the main hospital entrance.
+- [ ] Note down the hospital's central help desk location.
 
-#### 3. Stay & Attendant Comfort
-- [ ] Finalize lodging within 3-5 km of ${hospital} to minimize local traffic stress.
-- [ ] Confirm attendant rest facilities (attendant passes, canteen operating hours).
-- [ ] Pack comfort essentials: water bottle, power bank, light blanket, and prescription glasses.
-
-#### 4. Day-of-Visit Protocol
-- [ ] Report first to the **Outstation / New Registration Facilitation Desk**.
-- [ ] Request on-site wheelchair support at gate entry if required.
-- [ ] Verify billing payment options (UPI / NetBanking / Debit Card / Cash limit).
+#### 🏨 Attendant Lodging & Comfort
+- [ ] Reserve lodging within 3 km of the hospital to minimize local commute stress.
+- [ ] Confirm attendant entry passes and canteen timings.
+- [ ] Pack essentials: power bank, refillable water bottle, light shawl, and medication organizers.
 
 ---
-*Safety Notice: AarogyaGo coordinates practical journey logistics, accommodation, and hospital facilitation. We do not provide clinical diagnosis, prescriptions, or medical treatment recommendations.*`;
+*Safety Note: AarogyaGo coordinates practical journey logistics and accommodation. We do not provide clinical diagnosis or medical treatment.*
+
+Would you like me to help you plan specific lodging options or local transport for this visit?`;
 }
