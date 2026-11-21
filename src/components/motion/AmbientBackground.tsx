@@ -1,19 +1,21 @@
 "use client";
 
 import React from "react";
-import { motion } from "framer-motion";
+import { motion, useReducedMotion } from "framer-motion";
 
 export function AmbientBackground() {
+  const reduceMotion = useReducedMotion();
+
   return (
     <div className="fixed inset-0 pointer-events-none overflow-hidden -z-10">
       {/* Orb 1: Luminous HealthOrbit Mint / Teal */}
       <motion.div
-        animate={{
+        animate={reduceMotion ? undefined : {
           x: [0, 45, -35, 0],
           y: [0, -40, 25, 0],
           scale: [1, 1.15, 0.95, 1],
         }}
-        transition={{
+        transition={reduceMotion ? undefined : {
           duration: 18,
           repeat: Infinity,
           ease: "easeInOut",
@@ -23,12 +25,12 @@ export function AmbientBackground() {
 
       {/* Orb 2: HealthOrbit Soft Warm Coral / Amber glow (for AI warmth) */}
       <motion.div
-        animate={{
+        animate={reduceMotion ? undefined : {
           x: [0, -50, 35, 0],
           y: [0, 45, -30, 0],
           scale: [1, 0.92, 1.12, 1],
         }}
-        transition={{
+        transition={reduceMotion ? undefined : {
           duration: 22,
           repeat: Infinity,
           ease: "easeInOut",
@@ -38,12 +40,12 @@ export function AmbientBackground() {
 
       {/* Orb 3: HealthOrbit Soft Clinical Blue / Sky Cyan */}
       <motion.div
-        animate={{
+        animate={reduceMotion ? undefined : {
           x: [0, 30, -40, 0],
           y: [0, -35, 40, 0],
           scale: [0.95, 1.08, 0.95],
         }}
-        transition={{
+        transition={reduceMotion ? undefined : {
           duration: 16,
           repeat: Infinity,
           ease: "easeInOut",

@@ -57,7 +57,7 @@ export default function HomePage() {
     },
     {
       title: "End-to-End Tracking",
-      desc: "Real-time transparent status stages from initial request to arrival confirmation.",
+      desc: "Follow sample coordination stages from initial request to arrival planning.",
       icon: Route,
       color: "from-[#0284C7] to-[#38BDF8]",
     },
@@ -67,7 +67,7 @@ export default function HomePage() {
     {
       num: "01",
       title: "Discover & Compare",
-      desc: "Search verified hospital profiles with transparent non-clinical logistics and transit proximity.",
+      desc: "Explore sample hospital profiles with non-clinical logistics and nearby transit details.",
     },
     {
       num: "02",
@@ -156,7 +156,7 @@ export default function HomePage() {
                 </div>
                 <div className="flex items-center gap-1.5">
                   <CheckCircle2 className="w-4 h-4 text-[#0D7A6E] dark:text-[#2DD4BF]" />
-                  <span>Transparent Status Tracking</span>
+                  <span>Clear Journey Stages</span>
                 </div>
                 <div className="flex items-center gap-1.5">
                   <HeartHandshake className="w-4 h-4 text-[#E07A68]" />
@@ -185,14 +185,14 @@ export default function HomePage() {
                       </div>
                       <div>
                         <h3 className="font-bold text-sm text-[#0F1C1A] dark:text-[#F2FAF8]">
-                          Live Journey Prototype
+                          Sample Journey Preview
                         </h3>
                         <p className="text-xs text-[#4E6B63] dark:text-[#8FA8A1]">
-                          ID: ARG-2026-7821
+                          Illustrative example · not live data
                         </p>
                       </div>
                     </div>
-                    <Badge status="Under Review">Under Review</Badge>
+                    <Badge variant="illustrative">Sample data</Badge>
                   </div>
 
                   {/* Summary items */}

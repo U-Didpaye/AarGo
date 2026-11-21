@@ -104,7 +104,7 @@ export default function CoordinatorPage() {
             Demonstration Coordinator Desk
           </h1>
           <p className="text-sm text-[#4E6B63] dark:text-[#8FA8A1] mt-1">
-            Simulate non-clinical facilitation operations: review outstation inquiries, advance coordination milestones, and dispatch notes to patients.
+            Simulate non-clinical coordination using sample requests. Changes are saved only in this browser and are not sent to patients or shared with other users.
           </p>
         </FadeIn>
       </div>
@@ -155,7 +155,8 @@ export default function CoordinatorPage() {
               <Search className="w-4 h-4 absolute left-3 top-1/2 -translate-y-1/2 text-[#4E6B63] dark:text-[#8FA8A1]" />
               <input
                 type="text"
-                placeholder="Search patient, ID, or hospital..."
+                aria-label="Search sample requests by traveler, ID, or hospital"
+                placeholder="Search traveler, ID, or hospital..."
                 value={searchQuery}
                 onChange={(e) => setSearchQuery(e.target.value)}
                 className="w-full pl-9 pr-3 py-2 rounded-xl text-xs bg-white dark:bg-[#0D1C1E] border border-[#DBE9E6] dark:border-[rgba(16,148,133,0.3)] text-[#0F1C1A] dark:text-[#F2FAF8]"
@@ -180,10 +181,12 @@ export default function CoordinatorPage() {
             {filteredRequests.map((req) => {
               const isSelected = selectedReq?.id === req.id;
               return (
-                <div
+                <button
+                  type="button"
                   key={req.id}
                   onClick={() => selectRequest(req)}
-                  className={`p-4 rounded-xl border cursor-pointer transition-all ${
+                  aria-pressed={isSelected}
+                  className={`w-full text-left p-4 rounded-xl border transition-all focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#0D7A6E] dark:focus-visible:ring-[#2DD4BF] ${
                     isSelected
                       ? "bg-[#DAF0EC] dark:bg-[rgba(45,212,191,0.15)] border-[#0D7A6E] dark:border-[#2DD4BF] shadow-xs"
                       : "bg-white/80 dark:bg-[#0D1C1E]/80 border-[#DBE9E6] dark:border-[rgba(16,148,133,0.25)] hover:border-[#0D7A6E]/40"
@@ -209,7 +212,7 @@ export default function CoordinatorPage() {
                       {req.destinationCity}
                     </span>
                   </div>
-                </div>
+                </button>
               );
             })}
           </div>
