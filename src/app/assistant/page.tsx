@@ -195,7 +195,13 @@ How can I help you prepare for your journey today?`,
       {/* Chat Area styled like HealthOrbit ai-assistant workspace */}
       <GlassCard className="p-4 sm:p-6 mb-6 min-h-[460px] flex flex-col justify-between border-[#DBE9E6] dark:border-[rgba(16,148,133,0.3)] card-shine">
         {/* Message Thread */}
-        <div className="space-y-6 overflow-y-auto max-h-[520px] pr-2">
+        <div
+          role="log"
+          aria-label="Assistant conversation"
+          aria-live="polite"
+          aria-relevant="additions"
+          className="space-y-6 overflow-y-auto max-h-[520px] pr-2"
+        >
           {messages.map((msg) => (
             <div
               key={msg.id}
@@ -232,7 +238,7 @@ How can I help you prepare for your journey today?`,
                 </div>
 
                 {/* Formatted Content */}
-                <div className="whitespace-pre-wrap leading-relaxed text-xs sm:text-sm font-sans space-y-2">
+                <div className="whitespace-pre-wrap leading-7 text-sm sm:text-[15px] font-sans space-y-2">
                   {msg.content}
                 </div>
 
@@ -240,6 +246,8 @@ How can I help you prepare for your journey today?`,
                 {msg.sender === "assistant" && (
                   <div className="mt-4 pt-3 border-t border-[#DBE9E6]/60 dark:border-[rgba(16,148,133,0.2)] flex items-center gap-3 text-xs">
                     <button
+                      type="button"
+                      aria-label={copiedId === msg.id ? "Answer copied" : "Copy assistant answer"}
                       onClick={() => copyToClipboard(msg.content, msg.id)}
                       className="inline-flex items-center gap-1 text-[#4E6B63] hover:text-[#0D7A6E] dark:text-[#8FA8A1] dark:hover:text-[#2DD4BF] transition-colors font-medium"
                     >
@@ -256,6 +264,8 @@ How can I help you prepare for your journey today?`,
                       )}
                     </button>
                     <button
+                      type="button"
+                      aria-label="Export assistant answer as a text file"
                       onClick={() => exportAsText(msg.content)}
                       className="inline-flex items-center gap-1 text-[#4E6B63] hover:text-[#0D7A6E] dark:text-[#8FA8A1] dark:hover:text-[#2DD4BF] transition-colors font-medium"
                     >
@@ -275,7 +285,7 @@ How can I help you prepare for your journey today?`,
           ))}
 
           {isLoading && (
-            <div className="flex gap-3 items-center text-xs text-[#0D7A6E] dark:text-[#2DD4BF] pl-12 font-medium">
+            <div role="status" className="flex gap-3 items-center text-sm text-[#0D7A6E] dark:text-[#2DD4BF] pl-12 font-medium">
               <div className="w-2 h-2 rounded-full bg-[#109485] dark:bg-[#2DD4BF] animate-ping" />
               <span>Gemini is generating your personalized non-clinical itinerary...</span>
             </div>
@@ -312,6 +322,7 @@ How can I help you prepare for your journey today?`,
         >
           <input
             type="text"
+            aria-label="Ask the non-clinical journey assistant"
             placeholder="Ask about hospital transit, guest lodging, outstation file checklist..."
             value={inputPrompt}
             onChange={(e) => setInputPrompt(e.target.value)}

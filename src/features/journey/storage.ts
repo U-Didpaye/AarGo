@@ -6,9 +6,9 @@ const SEED_REQUESTS: VisitRequest[] = [
   {
     id: "ARG-2026-7821",
     createdAt: "2026-11-20T10:30:00.000Z",
-    patientName: "Rameshwar Sharma",
-    contactEmail: "rameshwar.s@example.com",
-    contactPhone: "+91 98223 45110",
+    patientName: "Sample Traveler 01",
+    contactEmail: "traveler01@example.com",
+    contactPhone: "Not a real number",
     destinationCity: "Nagpur",
     selectedHospitalId: "hosp-ngp-01",
     selectedHospitalName: "AIIMS Nagpur Medical Complex",
@@ -24,7 +24,7 @@ const SEED_REQUESTS: VisitRequest[] = [
       dietaryOrCulturalPreferences: false,
     },
     languagePreference: "Hindi / Marathi",
-    specialNotes: "Elderly patient needing ramp access and attendant lodging near MIHAN.",
+    specialNotes: "Example note: requests step-free access and nearby lodging.",
     status: "Under Review",
     statusHistory: [
       {
@@ -35,17 +35,17 @@ const SEED_REQUESTS: VisitRequest[] = [
       {
         status: "Under Review",
         timestamp: "2026-11-20T14:15:00.000Z",
-        note: "Non-clinical coordinator assigned. Verifying guest house availability near MIHAN."
+        note: "Example status update: sample lodging options are under review."
       }
     ],
-    coordinatorNotes: "Coordinator Priya verified guest house availability at MIHAN sector. Awaiting confirmation from patient attendant."
+    coordinatorNotes: "Example coordination note: lodging options are being reviewed. No real reservation has been made."
   },
   {
     id: "ARG-2026-9140",
     createdAt: "2026-11-18T09:00:00.000Z",
-    patientName: "Ananya Mukherjee",
-    contactEmail: "ananya.m@example.com",
-    contactPhone: "+91 94330 18274",
+    patientName: "Sample Traveler 02",
+    contactEmail: "traveler02@example.com",
+    contactPhone: "Not a real number",
     destinationCity: "New Delhi",
     selectedHospitalId: "hosp-del-01",
     selectedHospitalName: "Max Super Speciality Hospital, Saket (Illustrative)",
@@ -61,7 +61,7 @@ const SEED_REQUESTS: VisitRequest[] = [
       dietaryOrCulturalPreferences: true,
     },
     languagePreference: "Bengali / English",
-    specialNotes: "Requires Bengali language liaison for non-clinical registration desk.",
+    specialNotes: "Example note: requests Bengali-language assistance at registration.",
     status: "Hospital Contacted",
     statusHistory: [
       {
@@ -77,10 +77,10 @@ const SEED_REQUESTS: VisitRequest[] = [
       {
         status: "Hospital Contacted",
         timestamp: "2026-11-19T16:45:00.000Z",
-        note: "Hospital guest desk contacted for non-clinical registration slot on Nov 28."
+        note: "Example status update: a sample registration slot is being discussed."
       }
     ],
-    coordinatorNotes: "Hospital international & outstation desk acknowledged. Pre-visit checklist sent to patient."
+    coordinatorNotes: "Example coordination note: a pre-visit checklist is ready to review. No hospital contact has been made."
   }
 ];
 
@@ -95,7 +95,27 @@ export function getStoredRequests(): VisitRequest[] {
       return SEED_REQUESTS;
     }
     const parsed = JSON.parse(raw);
-    return Array.isArray(parsed) ? parsed : SEED_REQUESTS;
+    if (!Array.isArray(parsed)) return SEED_REQUESTS;
+
+    const sanitizedSamples = new Map(
+      SEED_REQUESTS.map((request) => [request.id, request])
+    );
+    const legacySampleNames = new Set([
+      "Rameshwar Sharma",
+      "Ananya Mukherjee",
+    ]);
+    const legacySamplePhones = new Set([
+      "+91 90000 00001",
+      "+91 90000 00002",
+    ]);
+
+    return parsed.map((request) => {
+      const sample = sanitizedSamples.get(request?.id);
+      const isLegacySample =
+        legacySampleNames.has(request?.patientName) ||
+        legacySamplePhones.has(request?.contactPhone);
+      return sample && isLegacySample ? sample : request;
+    });
   } catch {
     return SEED_REQUESTS;
   }

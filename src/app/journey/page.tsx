@@ -89,7 +89,7 @@ function JourneyDashboardContent() {
         <FadeIn>
           <div className="flex items-center gap-2 mb-2">
             <span className="text-xs font-bold uppercase tracking-wider text-[#0D7A6E] dark:text-[#2DD4BF]">
-              Real-time Journey Tracking
+              Journey Tracking Demo
             </span>
             <Badge variant="primary">Patient Portal</Badge>
           </div>
@@ -97,7 +97,7 @@ function JourneyDashboardContent() {
             My Medical Journey Tracker
           </h1>
           <p className="text-sm text-[#4E6B63] dark:text-[#8FA8A1] mt-1">
-            Follow every non-clinical milestone: from registration intake to lodging and hospital reception escorting.
+            Explore sample non-clinical milestones for a planned visit. Demo requests and status changes are saved only in this browser; they are not shared or live.
           </p>
         </FadeIn>
       </div>
@@ -109,6 +109,7 @@ function JourneyDashboardContent() {
             <Search className="w-4 h-4 absolute left-3.5 top-1/2 -translate-y-1/2 text-[#4E6B63] dark:text-[#8FA8A1]" />
             <input
               type="text"
+              aria-label="Search sample journey by request ID"
               placeholder="Enter Request ID (e.g. ARG-2026-7821)"
               value={searchInput}
               onChange={(e) => setSearchInput(e.target.value)}

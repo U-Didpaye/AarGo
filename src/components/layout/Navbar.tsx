@@ -62,7 +62,8 @@ export function Navbar() {
         </Link>
 
         {/* Desktop Nav Links */}
-        <nav className="hidden md:flex items-center gap-1 lg:gap-2">
+        <nav aria-label="Main navigation"
+          className="hidden md:flex items-center gap-0.5 lg:gap-1 xl:gap-2">
           {navLinks.map((link) => {
             const Icon = link.icon;
             const isActive = pathname === link.href;
@@ -70,16 +71,17 @@ export function Navbar() {
               <Link
                 key={link.href}
                 href={link.href}
-                className={`relative px-3.5 py-2 rounded-xl text-sm font-semibold transition-all flex items-center gap-2 ${
+                aria-current={isActive ? "page" : undefined}
+                className={`relative px-2 lg:px-2.5 xl:px-3.5 py-2 rounded-xl text-sm font-semibold transition-all flex items-center gap-1.5 xl:gap-2 ${
                   isActive
                     ? "text-[#0D7A6E] dark:text-[#2DD4BF] bg-[#DAF0EC]/80 dark:bg-[rgba(45,212,191,0.12)]"
                     : "text-[#4E6B63] dark:text-[#8FA8A1] hover:text-[#0F1C1A] dark:hover:text-[#F2FAF8] hover:bg-[#DAF0EC]/40 dark:hover:bg-[#0D1C1E]/60"
                 }`}
               >
                 <Icon className="w-4 h-4" />
-                <span>{link.label}</span>
+                <span className="sr-only lg:not-sr-only">{link.label}</span>
                 {link.badge && (
-                  <span className="text-[10px] uppercase font-extrabold px-1.5 py-0.2 rounded-full bg-gradient-to-r from-[#E07A68] to-[#EA580C] text-white shadow-xs">
+                  <span className="hidden xl:inline text-[10px] uppercase font-extrabold px-1.5 py-0.2 rounded-full bg-gradient-to-r from-[#E07A68] to-[#EA580C] text-white shadow-xs">
                     {link.badge}
                   </span>
                 )}
@@ -99,8 +101,9 @@ export function Navbar() {
         <div className="flex items-center gap-2.5">
           {/* Theme Toggle */}
           <button
+            type="button"
             onClick={toggleTheme}
-            aria-label="Toggle theme"
+            aria-label={`Switch to ${theme === "light" ? "dark" : "light"} mode`}
             className="p-2.5 rounded-xl text-[#4E6B63] dark:text-[#8FA8A1] hover:bg-[#DAF0EC]/60 dark:hover:bg-[#0D1C1E] transition-colors"
           >
             {theme === "light" ? (
@@ -119,7 +122,11 @@ export function Navbar() {
 
           {/* Mobile Menu Hamburger */}
           <button
+            type="button"
             onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
+            aria-expanded={mobileMenuOpen}
+            aria-controls="mobile-navigation"
+            aria-label={mobileMenuOpen ? "Close navigation menu" : "Open navigation menu"}
             className="md:hidden p-2 rounded-xl text-[#4E6B63] dark:text-[#8FA8A1] hover:bg-[#DAF0EC]/50 dark:hover:bg-[#0D1C1E]"
           >
             {mobileMenuOpen ? <X className="w-5 h-5" /> : <Menu className="w-5 h-5" />}
@@ -131,9 +138,12 @@ export function Navbar() {
       <AnimatePresence>
         {mobileMenuOpen && (
           <motion.div
+            role="navigation"
             initial={{ opacity: 0, height: 0 }}
             animate={{ opacity: 1, height: "auto" }}
             exit={{ opacity: 0, height: 0 }}
+            id="mobile-navigation"
+            aria-label="Mobile navigation"
             className="md:hidden border-t border-[#DBE9E6] dark:border-[rgba(16,148,133,0.25)] bg-[#F4F8F7]/95 dark:bg-[#071112]/95 backdrop-blur-xl px-4 py-4 space-y-2"
           >
             {navLinks.map((link) => {
@@ -143,6 +153,7 @@ export function Navbar() {
                 <Link
                   key={link.href}
                   href={link.href}
+                  aria-current={isActive ? "page" : undefined}
                   onClick={() => setMobileMenuOpen(false)}
                   className={`flex items-center justify-between p-3 rounded-xl text-sm font-semibold ${
                     isActive
