@@ -1,0 +1,95 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+:root {
+  --font-sans: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+  --bg-primary: #F6F7F9;
+  --surface: #FFFFFF;
+  --color-primary: #3D43C8;
+  --color-primary-hover: #2F34A8;
+  --color-primary-light: #ECEEFF;
+  --color-typography: #161A2C;
+  --color-muted: #5E647D;
+  --color-border: #E2E5EE;
+  --glass-bg: rgba(255, 255, 255, 0.78);
+  --glass-border: rgba(226, 229, 238, 0.8);
+}
+
+.dark {
+  --bg-primary: #0B0D12;
+  --surface: #151821;
+  --color-primary: #A5AAFF;
+  --color-primary-hover: #8C92FF;
+  --color-primary-light: #232757;
+  --color-typography: #F2F4F8;
+  --color-muted: #9CA3AF;
+  --color-border: #262C3D;
+  --glass-bg: rgba(21, 24, 33, 0.8);
+  --glass-border: rgba(38, 44, 61, 0.85);
+}
+
+body {
+  background-color: var(--bg-primary);
+  color: var(--color-typography);
+  font-family: var(--font-sans);
+  overflow-x: hidden;
+  transition: background-color 0.3s ease, color 0.3s ease;
+}
+
+/* ChokasOne Glassmorphism */
+.glass-panel {
+  background: var(--glass-bg);
+  backdrop-filter: blur(16px);
+  -webkit-backdrop-filter: blur(16px);
+  border: 1px solid var(--glass-border);
+}
+
+.glass-card {
+  background: var(--glass-bg);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  border: 1px solid var(--glass-border);
+  transition: all 0.25s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.glass-card:hover {
+  transform: translateY(-2px);
+  border-color: rgba(61, 67, 200, 0.35);
+  box-shadow: 0 12px 30px -10px rgba(61, 67, 200, 0.12);
+}
+
+.dark .glass-card:hover {
+  border-color: rgba(165, 170, 255, 0.4);
+  box-shadow: 0 12px 30px -10px rgba(165, 170, 255, 0.15);
+}
+
+/* QuietPulse Wave Gradient */
+.quiet-gradient-bg {
+  background: radial-gradient(circle at 10% 20%, rgba(61, 67, 200, 0.08) 0%, transparent 40%),
+              radial-gradient(circle at 90% 80%, rgba(165, 170, 255, 0.08) 0%, transparent 40%);
+}
+
+.dark .quiet-gradient-bg {
+  background: radial-gradient(circle at 10% 20%, rgba(61, 67, 200, 0.2) 0%, transparent 40%),
+              radial-gradient(circle at 90% 80%, rgba(165, 170, 255, 0.12) 0%, transparent 40%);
+}
+
+/* Custom scrollbars */
+::-webkit-scrollbar {
+  width: 8px;
+  height: 8px;
+}
+
+::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+::-webkit-scrollbar-thumb {
+  background: rgba(120, 120, 150, 0.25);
+  border-radius: 9999px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: rgba(120, 120, 150, 0.45);
+}
