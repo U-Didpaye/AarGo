@@ -12,12 +12,9 @@ import {
   Hotel,
   Car,
   Languages,
-  Clock,
   ShieldCheck,
   CheckCircle2,
   ArrowRight,
-  FileText,
-  UserCheck,
   HeartHandshake,
 } from "lucide-react";
 import { Button } from "@/components/ui/Button";
@@ -114,7 +111,7 @@ export default function HomePage() {
 
             <FadeIn delay={0.3}>
               <p className="text-base sm:text-lg text-slate-600 dark:text-slate-300 max-w-2xl mx-auto lg:mx-0 leading-relaxed">
-                Organizing a planned medical journey shouldn't feel like navigating a maze. AarogyaGo unifies hospital discovery, outstation lodging, local transit, and language assistance into one calm, AI-assisted patient journey.
+                Organizing a planned medical journey shouldn&apos;t feel like navigating a maze. AarogyaGo unifies hospital discovery, outstation lodging, local transit, and language assistance into one calm, AI-assisted patient journey.
               </p>
             </FadeIn>
 

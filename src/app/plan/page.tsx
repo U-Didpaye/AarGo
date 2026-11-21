@@ -1,19 +1,15 @@
 "use client";
 
 import React, { useState, useEffect, Suspense } from "react";
-import { useSearchParams, useRouter } from "next/navigation";
+import { useSearchParams } from "next/navigation";
 import Link from "next/link";
-import { motion, AnimatePresence } from "framer-motion";
+import { motion } from "framer-motion";
 import confetti from "canvas-confetti";
 import {
   CalendarPlus,
   CheckCircle2,
   Building2,
-  Calendar,
   User,
-  Mail,
-  Phone,
-  MapPin,
   Hotel,
   Car,
   Languages,
@@ -34,7 +30,6 @@ import { FadeIn } from "@/components/motion/MotionWrapper";
 
 function PlanVisitContent() {
   const searchParams = useSearchParams();
-  const router = useRouter();
   const preselectedHospId = searchParams.get("hospital");
 
   const [step, setStep] = useState<1 | 2 | 3>(1);
@@ -243,7 +238,7 @@ function PlanVisitContent() {
           <div
             key={item.num}
             onClick={() => {
-              if (item.num < step) setStep(item.num as any);
+              if (item.num < step) setStep(item.num as 1 | 2 | 3);
             }}
             className={`p-3 rounded-xl border text-center transition-all ${
               step === item.num
@@ -493,11 +488,11 @@ function PlanVisitContent() {
                   },
                 ].map((item) => {
                   const Icon = item.icon;
-                  const isChecked = (services as any)[item.key];
+                  const isChecked = services[item.key as keyof ServiceRequirements];
                   return (
                     <div
                       key={item.key}
-                      onClick={() => toggleService(item.key as any)}
+                      onClick={() => toggleService(item.key as keyof ServiceRequirements)}
                       className={`p-4 rounded-xl border cursor-pointer transition-all flex items-start gap-3 ${
                         isChecked
                           ? "bg-[#3D43C8]/10 dark:bg-[#A5AAFF]/15 border-[#3D43C8]/50 dark:border-[#A5AAFF]/60"

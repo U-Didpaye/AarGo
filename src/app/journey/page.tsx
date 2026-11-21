@@ -9,18 +9,15 @@ import {
   Search,
   CheckCircle2,
   Clock,
-  Building2,
   Calendar,
   MapPin,
   Sparkles,
   FileCheck,
   User,
-  ArrowRight,
   Printer,
-  ShieldCheck,
   AlertCircle,
 } from "lucide-react";
-import { getStoredRequests, getRequestById } from "@/features/journey/storage";
+import { getStoredRequests } from "@/features/journey/storage";
 import { VisitRequest, JourneyStatus } from "@/features/journey/types";
 import { formatDate } from "@/lib/utils";
 import { Button } from "@/components/ui/Button";

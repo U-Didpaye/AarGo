@@ -1,22 +1,17 @@
 "use client";
 
-import React, { useState, useEffect, Suspense } from "react";
+import React, { useState, Suspense } from "react";
 import { useSearchParams } from "next/navigation";
-import { motion, AnimatePresence } from "framer-motion";
 import {
   Sparkles,
   Send,
   Bot,
   User,
-  CheckSquare,
   Copy,
   Check,
   Download,
   ShieldAlert,
   Building2,
-  Calendar,
-  MapPin,
-  RefreshCw,
   Lightbulb,
 } from "lucide-react";
 import { Button } from "@/components/ui/Button";
@@ -114,7 +109,7 @@ How can I help you prepare for your journey today?`,
       };
 
       setMessages((prev) => [...prev, reply]);
-    } catch (err) {
+    } catch {
       const errorReply: ChatMessage = {
         id: "err-" + Date.now(),
         sender: "assistant",

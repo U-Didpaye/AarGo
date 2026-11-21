@@ -14,7 +14,6 @@ import {
   Moon,
   Menu,
   X,
-  ShieldCheck,
 } from "lucide-react";
 import { useTheme } from "../providers/ThemeProvider";
 import { Button } from "../ui/Button";

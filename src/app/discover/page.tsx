@@ -10,11 +10,9 @@ import {
   Languages,
   Train,
   Hotel,
-  ShieldCheck,
   Check,
   X,
   CalendarPlus,
-  Filter,
 } from "lucide-react";
 import { SAMPLE_HOSPITALS, CITIES, SPECIALTIES } from "@/features/hospitals/data";
 import { Hospital } from "@/features/journey/types";
