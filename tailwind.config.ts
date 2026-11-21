@@ -11,57 +11,65 @@ const config: Config = {
   theme: {
     extend: {
       colors: {
-        chokas: {
+        aarogya: {
           light: {
-            bg: "#F6F7F9",
+            bg: "#F4F8F7", // HealthOrbit airy background
             surface: "#FFFFFF",
-            primary: "#3D43C8",
-            primaryHover: "#2F34A8",
-            primaryLight: "#ECEEFF",
-            typography: "#161A2C",
-            muted: "#5E647D",
-            border: "#E2E5EE",
-            glass: "rgba(255, 255, 255, 0.72)",
+            primary: "#0D7A6E", // HealthOrbit sage teal
+            primaryHover: "#0B5E55", // Deep teal 900
+            primaryLight: "#DAF0EC", // Soft sage tint
+            vibrant: "#109485", // Electric teal 600
+            accent: "#E07A68", // HealthOrbit coral for AI glow
+            typography: "#0F1C1A", // Deep teal-slate text
+            muted: "#4E6B63", // Calm muted sage
+            border: "#DBE9E6", // Soft clinical border
+            glass: "rgba(255, 255, 255, 0.82)",
           },
           dark: {
-            bg: "#0B0D12",
-            surface: "#151821",
-            surfaceHover: "#1E222F",
-            primary: "#A5AAFF",
-            primaryHover: "#8C92FF",
-            primaryDark: "#232757",
-            typography: "#F2F4F8",
-            muted: "#9CA3AF",
-            border: "#262C3D",
-            glass: "rgba(21, 24, 33, 0.75)",
+            bg: "#071112", // Deep abyssal teal void
+            surface: "#0D1C1E", // Obsidian teal surface
+            surfaceHover: "#13282B",
+            primary: "#2DD4BF", // Luminous mint
+            primaryHover: "#5EEAD4",
+            primaryDark: "#0B5E55",
+            vibrant: "#38BDF8", // Luminous cyan
+            accent: "#F59E0B", // Warm gold for AI
+            typography: "#F2FAF8", // Pure clinical off-white
+            muted: "#8FA8A1", // Cool muted sage
+            border: "rgba(16, 148, 133, 0.25)",
+            glass: "rgba(13, 28, 30, 0.82)",
           },
         },
       },
       boxShadow: {
-        glass: "0 8px 32px 0 rgba(31, 38, 135, 0.07)",
-        "glass-dark": "0 8px 32px 0 rgba(0, 0, 0, 0.45)",
-        glow: "0 0 25px -5px rgba(61, 67, 200, 0.35)",
-        "glow-dark": "0 0 25px -5px rgba(165, 170, 255, 0.25)",
-      },
-      backdropBlur: {
-        xs: "2px",
+        glass: "0 20px 40px rgba(13, 122, 110, 0.08), inset 0 1px 1px rgba(255, 255, 255, 0.9)",
+        "glass-dark": "0 20px 40px rgba(0, 0, 0, 0.45), inset 0 1px 1px rgba(255, 255, 255, 0.05)",
+        "teal-glow": "0 0 25px -4px rgba(16, 148, 133, 0.35)",
+        "coral-glow": "0 0 25px -4px rgba(224, 122, 104, 0.35)",
+        "mint-glow": "0 0 25px -4px rgba(45, 212, 191, 0.3)",
       },
       animation: {
-        "float-slow": "float 8s ease-in-out infinite",
+        "float-slow": "float 16s ease-in-out infinite",
         "pulse-subtle": "pulseSubtle 4s ease-in-out infinite",
-        "shimmer": "shimmer 2.5s infinite",
+        "spin-slow": "spinSlow 14s linear infinite",
+        "spin-reverse": "spinReverse 10s linear infinite",
       },
       keyframes: {
         float: {
-          "0%, 100%": { transform: "translateY(0px)" },
-          "50%": { transform: "translateY(-10px)" },
+          "0%, 100%": { transform: "translate(0px, 0px) scale(1)" },
+          "50%": { transform: "translate(25px, -20px) scale(1.08)" },
         },
         pulseSubtle: {
           "0%, 100%": { opacity: "1" },
           "50%": { opacity: "0.8" },
         },
-        shimmer: {
-          "100%": { transform: "translateX(100%)" },
+        spinSlow: {
+          "0%": { transform: "rotate(0deg)" },
+          "100%": { transform: "rotate(360deg)" },
+        },
+        spinReverse: {
+          "0%": { transform: "rotate(360deg)" },
+          "100%": { transform: "rotate(0deg)" },
         },
       },
     },

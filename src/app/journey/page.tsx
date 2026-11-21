@@ -88,15 +88,15 @@ function JourneyDashboardContent() {
       <div className="mb-8">
         <FadeIn>
           <div className="flex items-center gap-2 mb-2">
-            <span className="text-xs font-bold uppercase tracking-wider text-[#3D43C8] dark:text-[#A5AAFF]">
+            <span className="text-xs font-bold uppercase tracking-wider text-[#0D7A6E] dark:text-[#2DD4BF]">
               Real-time Journey Tracking
             </span>
             <Badge variant="primary">Patient Portal</Badge>
           </div>
-          <h1 className="text-3xl font-extrabold text-slate-900 dark:text-white">
+          <h1 className="text-3xl font-extrabold text-[#0F1C1A] dark:text-[#F2FAF8]">
             My Medical Journey Tracker
           </h1>
-          <p className="text-sm text-slate-600 dark:text-slate-400 mt-1">
+          <p className="text-sm text-[#4E6B63] dark:text-[#8FA8A1] mt-1">
             Follow every non-clinical milestone: from registration intake to lodging and hospital reception escorting.
           </p>
         </FadeIn>
@@ -106,13 +106,13 @@ function JourneyDashboardContent() {
       <div className="mb-8 flex flex-col md:flex-row gap-4 items-stretch md:items-center justify-between">
         <form onSubmit={handleSearch} className="flex gap-2 flex-1 max-w-md">
           <div className="relative flex-1">
-            <Search className="w-4 h-4 absolute left-3.5 top-1/2 -translate-y-1/2 text-slate-400" />
+            <Search className="w-4 h-4 absolute left-3.5 top-1/2 -translate-y-1/2 text-[#4E6B63] dark:text-[#8FA8A1]" />
             <input
               type="text"
               placeholder="Enter Request ID (e.g. ARG-2026-7821)"
               value={searchInput}
               onChange={(e) => setSearchInput(e.target.value)}
-              className="w-full pl-10 pr-4 py-2.5 rounded-xl text-sm bg-white dark:bg-[#151821] border border-slate-200 dark:border-slate-800 text-slate-900 dark:text-white uppercase font-mono"
+              className="w-full pl-10 pr-4 py-2.5 rounded-xl text-sm bg-white dark:bg-[#0D1C1E] border border-[#DBE9E6] dark:border-[rgba(16,148,133,0.3)] text-[#0F1C1A] dark:text-[#F2FAF8] uppercase font-mono"
             />
           </div>
           <Button type="submit" variant="primary" size="md">
@@ -123,7 +123,7 @@ function JourneyDashboardContent() {
         {/* Quick select saved requests */}
         {allRequests.length > 0 && (
           <div className="flex items-center gap-2 overflow-x-auto pb-1">
-            <span className="text-xs text-slate-500 whitespace-nowrap">Switch Journey:</span>
+            <span className="text-xs text-[#4E6B63] dark:text-[#8FA8A1] whitespace-nowrap font-medium">Switch Journey:</span>
             {allRequests.slice(0, 4).map((r) => (
               <button
                 key={r.id}
@@ -132,10 +132,10 @@ function JourneyDashboardContent() {
                   setSearchInput(r.id);
                   setErrorMessage("");
                 }}
-                className={`text-xs px-2.5 py-1 rounded-lg border font-mono transition-all ${
+                className={`text-xs px-2.5 py-1 rounded-lg border font-mono font-bold transition-all ${
                   selectedRequest?.id === r.id
-                    ? "bg-[#3D43C8] text-white border-[#3D43C8] dark:bg-[#A5AAFF] dark:text-[#0B0D12]"
-                    : "bg-white dark:bg-slate-800 border-slate-200 dark:border-slate-700 text-slate-600 dark:text-slate-300"
+                    ? "bg-[#0D7A6E] text-white border-[#0D7A6E] dark:bg-[#2DD4BF] dark:text-[#071112]"
+                    : "bg-white dark:bg-[#0D1C1E] border-[#DBE9E6] dark:border-[rgba(16,148,133,0.3)] text-[#4E6B63] dark:text-[#8FA8A1]"
                 }`}
               >
                 {r.id}
@@ -154,30 +154,30 @@ function JourneyDashboardContent() {
 
       {selectedRequest ? (
         <div className="space-y-8">
-          {/* Main Status Banner */}
-          <GlassCard className="p-6 sm:p-8 border-indigo-200/70 dark:border-indigo-900/50">
-            <div className="flex flex-col sm:flex-row sm:items-center justify-between pb-6 border-b border-slate-200/60 dark:border-slate-800/60 gap-4">
+          {/* Main Status Banner with HealthOrbit subtle teal border */}
+          <GlassCard className="p-6 sm:p-8 border-[#DBE9E6] dark:border-[rgba(16,148,133,0.3)] card-shine">
+            <div className="flex flex-col sm:flex-row sm:items-center justify-between pb-6 border-b border-[#DBE9E6]/70 dark:border-[rgba(16,148,133,0.2)] gap-4">
               <div>
                 <div className="flex items-center gap-2.5 mb-1.5">
-                  <span className="text-xs font-mono font-bold text-slate-500 dark:text-slate-400">
+                  <span className="text-xs font-mono font-bold text-[#4E6B63] dark:text-[#8FA8A1]">
                     ID: {selectedRequest.id}
                   </span>
                   <Badge status={selectedRequest.status}>{selectedRequest.status}</Badge>
                 </div>
-                <h2 className="text-xl sm:text-2xl font-bold text-slate-900 dark:text-white">
+                <h2 className="text-xl sm:text-2xl font-extrabold text-[#0F1C1A] dark:text-[#F2FAF8]">
                   {selectedRequest.selectedHospitalName}
                 </h2>
-                <div className="flex flex-wrap items-center gap-4 text-xs text-slate-500 dark:text-slate-400 mt-2">
+                <div className="flex flex-wrap items-center gap-4 text-xs text-[#4E6B63] dark:text-[#8FA8A1] mt-2">
                   <span className="flex items-center gap-1">
-                    <User className="w-3.5 h-3.5 text-indigo-500" />
-                    Patient: <strong>{selectedRequest.patientName}</strong>
+                    <User className="w-3.5 h-3.5 text-[#0D7A6E] dark:text-[#2DD4BF]" />
+                    Patient: <strong className="text-[#0F1C1A] dark:text-[#F2FAF8]">{selectedRequest.patientName}</strong>
                   </span>
                   <span className="flex items-center gap-1">
-                    <MapPin className="w-3.5 h-3.5 text-indigo-500" />
+                    <MapPin className="w-3.5 h-3.5 text-[#0D7A6E] dark:text-[#2DD4BF]" />
                     Origin: {selectedRequest.travelOriginCity} &rarr; {selectedRequest.destinationCity}
                   </span>
                   <span className="flex items-center gap-1">
-                    <Calendar className="w-3.5 h-3.5 text-indigo-500" />
+                    <Calendar className="w-3.5 h-3.5 text-[#0D7A6E] dark:text-[#2DD4BF]" />
                     Target Date: {formatDate(selectedRequest.preferredDate)}
                   </span>
                 </div>
@@ -199,29 +199,29 @@ function JourneyDashboardContent() {
                     selectedRequest.destinationCity
                   )}&date=${encodeURIComponent(selectedRequest.preferredDate)}`}
                 >
-                  <Button variant="primary" size="sm" icon={<Sparkles className="w-3.5 h-3.5" />}>
+                  <Button variant="coral" size="sm" icon={<Sparkles className="w-3.5 h-3.5" />}>
                     AI Prep Plan
                   </Button>
                 </Link>
               </div>
             </div>
 
-            {/* 4-Stage Animated Progress Timeline */}
+            {/* 4-Stage Animated Progress Timeline with HealthOrbit Teal Gradient */}
             <div className="pt-8 pb-4">
-              <h3 className="text-xs font-bold uppercase tracking-wider text-slate-700 dark:text-slate-300 mb-6">
+              <h3 className="text-xs font-bold uppercase tracking-wider text-[#0F1C1A] dark:text-[#F2FAF8] mb-6">
                 Coordination Journey Timeline
               </h3>
 
               <div className="relative">
                 {/* Connecting track */}
-                <div className="hidden md:block absolute top-1/2 left-0 right-0 h-1 bg-slate-200 dark:bg-slate-800 -translate-y-1/2 -z-0" />
+                <div className="hidden md:block absolute top-1/2 left-0 right-0 h-1 bg-[#DAF0EC] dark:bg-[#13282B] -translate-y-1/2 -z-0" />
                 <motion.div
                   initial={{ width: 0 }}
                   animate={{
                     width: `${(getStageIndex(selectedRequest.status) / (STAGES.length - 1)) * 100}%`,
                   }}
                   transition={{ duration: 1, ease: [0.16, 1, 0.3, 1] }}
-                  className="hidden md:block absolute top-1/2 left-0 h-1 bg-gradient-to-r from-[#3D43C8] to-[#A5AAFF] -translate-y-1/2 -z-0"
+                  className="hidden md:block absolute top-1/2 left-0 h-1 bg-gradient-to-r from-[#0D7A6E] via-[#109485] to-[#2DD4BF] -translate-y-1/2 -z-0"
                 />
 
                 <div className="grid grid-cols-1 md:grid-cols-4 gap-6 relative z-10">
@@ -235,28 +235,28 @@ function JourneyDashboardContent() {
                         key={stage}
                         className={`p-4 rounded-xl border flex flex-col justify-between transition-all ${
                           isCurrent
-                            ? "bg-[#3D43C8]/10 dark:bg-[#A5AAFF]/15 border-[#3D43C8] dark:border-[#A5AAFF] shadow-sm ring-1 ring-[#3D43C8]/20"
+                            ? "bg-[#DAF0EC] dark:bg-[rgba(45,212,191,0.15)] border-[#0D7A6E] dark:border-[#2DD4BF] shadow-xs ring-1 ring-[#0D7A6E]/30"
                             : isPassed
-                            ? "bg-slate-50 dark:bg-slate-800/60 border-emerald-300 dark:border-emerald-800/60"
-                            : "bg-white/40 dark:bg-slate-900/40 border-slate-200 dark:border-slate-800 opacity-60"
+                            ? "bg-white dark:bg-[#13282B]/60 border-[#BCE1D8] dark:border-[rgba(45,212,191,0.3)]"
+                            : "bg-white/40 dark:bg-[#0D1C1E]/40 border-[#DBE9E6]/60 dark:border-slate-800 opacity-60"
                         }`}
                       >
                         <div className="flex items-center justify-between mb-2">
-                          <span className="text-[10px] font-mono font-bold text-slate-400">
+                          <span className="text-[10px] font-mono font-bold text-[#4E6B63] dark:text-[#8FA8A1]">
                             STAGE 0{idx + 1}
                           </span>
                           {isPassed ? (
-                            <CheckCircle2 className="w-4 h-4 text-emerald-500" />
+                            <CheckCircle2 className="w-4 h-4 text-[#0D7A6E] dark:text-[#2DD4BF]" />
                           ) : isCurrent ? (
-                            <span className="w-2.5 h-2.5 rounded-full bg-[#3D43C8] dark:bg-[#A5AAFF] animate-ping" />
+                            <span className="w-2.5 h-2.5 rounded-full bg-[#0D7A6E] dark:bg-[#2DD4BF] animate-ping" />
                           ) : (
                             <Clock className="w-3.5 h-3.5 text-slate-300 dark:text-slate-600" />
                           )}
                         </div>
-                        <h4 className="text-xs font-bold text-slate-900 dark:text-white">
+                        <h4 className="text-xs font-bold text-[#0F1C1A] dark:text-[#F2FAF8]">
                           {stage}
                         </h4>
-                        <p className="text-[11px] text-slate-500 dark:text-slate-400 mt-1">
+                        <p className="text-[11px] text-[#4E6B63] dark:text-[#8FA8A1] mt-1">
                           {idx === 0 && "Request logged in portal"}
                           {idx === 1 && "Coordinator reviewing travel & stay"}
                           {idx === 2 && "Outstation hospital desk reached"}
@@ -270,8 +270,8 @@ function JourneyDashboardContent() {
             </div>
 
             {/* Requested Non-Clinical Services Pills */}
-            <div className="mt-8 pt-6 border-t border-slate-200/60 dark:border-slate-800/60">
-              <span className="text-xs font-semibold text-slate-600 dark:text-slate-400 uppercase tracking-wider block mb-2.5">
+            <div className="mt-8 pt-6 border-t border-[#DBE9E6]/70 dark:border-[rgba(16,148,133,0.2)]">
+              <span className="text-xs font-bold text-[#0F1C1A] dark:text-[#F2FAF8] uppercase tracking-wider block mb-2.5">
                 Facilitation Services Enrolled
               </span>
               <div className="flex flex-wrap gap-2">
@@ -288,7 +288,7 @@ function JourneyDashboardContent() {
                   return (
                     <span
                       key={key}
-                      className="text-xs px-3 py-1 rounded-lg bg-indigo-50 dark:bg-indigo-950/60 text-indigo-700 dark:text-indigo-300 border border-indigo-200/60 dark:border-indigo-800/40"
+                      className="text-xs px-3 py-1 rounded-lg bg-[#DAF0EC] dark:bg-[rgba(45,212,191,0.15)] text-[#0D7A6E] dark:text-[#2DD4BF] border border-[#BCE1D8] dark:border-[rgba(45,212,191,0.25)] font-medium"
                     >
                       ✓ {labels[key] || key}
                     </span>
@@ -299,11 +299,11 @@ function JourneyDashboardContent() {
 
             {/* Coordinator Notes */}
             {selectedRequest.coordinatorNotes && (
-              <div className="mt-6 p-4 rounded-xl bg-slate-50 dark:bg-slate-800/40 border border-slate-200 dark:border-slate-700">
-                <span className="text-xs font-bold uppercase tracking-wider text-slate-600 dark:text-slate-400 block mb-1">
+              <div className="mt-6 p-4 rounded-xl bg-[#F4F8F7] dark:bg-[#13282B]/50 border border-[#DBE9E6] dark:border-[rgba(16,148,133,0.25)]">
+                <span className="text-xs font-bold uppercase tracking-wider text-[#0D7A6E] dark:text-[#2DD4BF] block mb-1">
                   Coordinator Desk Dispatch Notes
                 </span>
-                <p className="text-xs sm:text-sm text-slate-800 dark:text-slate-200 leading-relaxed">
+                <p className="text-xs sm:text-sm text-[#0F1C1A] dark:text-[#F2FAF8] leading-relaxed">
                   {selectedRequest.coordinatorNotes}
                 </p>
               </div>
@@ -311,9 +311,9 @@ function JourneyDashboardContent() {
           </GlassCard>
 
           {/* Status History Audit Log */}
-          <GlassCard className="p-6">
-            <h3 className="text-sm font-bold text-slate-900 dark:text-white mb-4 flex items-center gap-2">
-              <FileCheck className="w-4 h-4 text-[#3D43C8] dark:text-[#A5AAFF]" />
+          <GlassCard className="p-6 border-[#DBE9E6] dark:border-[rgba(16,148,133,0.3)]">
+            <h3 className="text-sm font-bold text-[#0F1C1A] dark:text-[#F2FAF8] mb-4 flex items-center gap-2">
+              <FileCheck className="w-4 h-4 text-[#0D7A6E] dark:text-[#2DD4BF]" />
               <span>Activity & Status History Log</span>
             </h3>
 
@@ -321,15 +321,15 @@ function JourneyDashboardContent() {
               {selectedRequest.statusHistory.map((h, i) => (
                 <div
                   key={i}
-                  className="p-3 rounded-xl bg-slate-50 dark:bg-slate-800/40 border border-slate-200/60 dark:border-slate-800 flex items-start justify-between text-xs gap-3"
+                  className="p-3.5 rounded-xl bg-[#F4F8F7] dark:bg-[#13282B]/40 border border-[#DBE9E6] dark:border-[rgba(16,148,133,0.2)] flex items-start justify-between text-xs gap-3"
                 >
                   <div>
-                    <span className="font-semibold text-slate-900 dark:text-white">
+                    <span className="font-bold text-[#0F1C1A] dark:text-[#F2FAF8]">
                       {h.status}
                     </span>
-                    <p className="text-slate-600 dark:text-slate-400 mt-0.5">{h.note}</p>
+                    <p className="text-[#4E6B63] dark:text-[#8FA8A1] mt-0.5">{h.note}</p>
                   </div>
-                  <span className="text-[11px] text-slate-400 shrink-0 font-mono">
+                  <span className="text-[11px] text-[#4E6B63] dark:text-[#8FA8A1] shrink-0 font-mono">
                     {formatDate(h.timestamp)}
                   </span>
                 </div>
@@ -338,12 +338,12 @@ function JourneyDashboardContent() {
           </GlassCard>
         </div>
       ) : (
-        <div className="text-center py-16 bg-white/40 dark:bg-slate-800/30 rounded-2xl border border-slate-200 dark:border-slate-800">
-          <Route className="w-12 h-12 text-slate-300 mx-auto mb-3" />
-          <h3 className="text-base font-semibold text-slate-700 dark:text-slate-300">
+        <div className="text-center py-16 bg-white/40 dark:bg-[#0D1C1E]/30 rounded-2xl border border-[#DBE9E6] dark:border-[rgba(16,148,133,0.25)]">
+          <Route className="w-12 h-12 text-[#4E6B63] dark:text-[#8FA8A1] mx-auto mb-3 opacity-60" />
+          <h3 className="text-base font-bold text-[#0F1C1A] dark:text-[#F2FAF8]">
             No coordination request selected
           </h3>
-          <p className="text-xs text-slate-500 mt-1">
+          <p className="text-xs text-[#4E6B63] dark:text-[#8FA8A1] mt-1">
             Submit a new visit request or search by reference ID above.
           </p>
           <Link href="/plan" className="inline-block mt-4">
@@ -359,7 +359,7 @@ function JourneyDashboardContent() {
 
 export default function JourneyPage() {
   return (
-    <Suspense fallback={<div className="p-12 text-center text-sm text-slate-500">Loading journey tracker...</div>}>
+    <Suspense fallback={<div className="p-12 text-center text-sm text-[#4E6B63]">Loading journey tracker...</div>}>
       <JourneyDashboardContent />
     </Suspense>
   );

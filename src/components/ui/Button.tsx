@@ -5,7 +5,7 @@ import { motion, HTMLMotionProps } from "framer-motion";
 import { cn } from "@/lib/utils";
 
 interface ButtonProps extends Omit<HTMLMotionProps<"button">, "children"> {
-  variant?: "primary" | "secondary" | "outline" | "ghost" | "glass";
+  variant?: "primary" | "secondary" | "outline" | "ghost" | "glass" | "coral";
   size?: "sm" | "md" | "lg";
   children: React.ReactNode;
   icon?: React.ReactNode;
@@ -25,7 +25,7 @@ export function Button({
   ...props
 }: ButtonProps) {
   const baseStyles =
-    "inline-flex items-center justify-center font-medium rounded-xl transition-colors focus:outline-none focus:ring-2 focus:ring-offset-2 disabled:opacity-60 disabled:cursor-not-allowed select-none";
+    "inline-flex items-center justify-center font-semibold rounded-xl transition-all focus:outline-none focus:ring-2 focus:ring-offset-2 disabled:opacity-60 disabled:cursor-not-allowed select-none tracking-tight";
 
   const sizeStyles = {
     sm: "px-3.5 py-1.5 text-xs gap-1.5",
@@ -35,15 +35,17 @@ export function Button({
 
   const variantStyles = {
     primary:
-      "bg-[#3D43C8] hover:bg-[#2F34A8] text-white shadow-sm dark:bg-[#A5AAFF] dark:text-[#0B0D12] dark:hover:bg-[#8C92FF] focus:ring-[#3D43C8]/50",
+      "bg-[#0D7A6E] hover:bg-[#0B5E55] text-white shadow-sm dark:bg-[#2DD4BF] dark:text-[#071112] dark:hover:bg-[#5EEAD4] focus:ring-[#0D7A6E]/50 shadow-[0_4px_14px_rgba(13,122,110,0.25)]",
     secondary:
-      "bg-slate-100 hover:bg-slate-200 text-slate-900 dark:bg-slate-800 dark:hover:bg-slate-700 dark:text-slate-100",
+      "bg-[#DAF0EC] hover:bg-[#C2E7E0] text-[#0D7A6E] dark:bg-[#0D1C1E] dark:hover:bg-[#13282B] dark:text-[#2DD4BF] border border-[#BCE1D8] dark:border-[rgba(16,148,133,0.3)]",
+    coral:
+      "bg-[#E07A68] hover:bg-[#C96756] text-white shadow-[0_4px_14px_rgba(224,122,104,0.35)] focus:ring-[#E07A68]/50",
     outline:
-      "border border-slate-300 dark:border-slate-700 hover:bg-slate-50 dark:hover:bg-slate-800/60 text-slate-800 dark:text-slate-200",
+      "border border-[#DBE9E6] dark:border-[rgba(16,148,133,0.3)] hover:bg-[#F4F8F7] dark:hover:bg-[#0D1C1E] text-[#0F1C1A] dark:text-[#F2FAF8]",
     ghost:
-      "hover:bg-slate-100 dark:hover:bg-slate-800/60 text-slate-700 dark:text-slate-300",
+      "hover:bg-[#DAF0EC]/60 dark:hover:bg-[#0D1C1E]/80 text-[#0F1C1A] dark:text-[#F2FAF8]",
     glass:
-      "bg-white/60 dark:bg-slate-800/60 backdrop-blur-md border border-white/40 dark:border-slate-700/60 hover:bg-white/80 dark:hover:bg-slate-800/90 text-slate-800 dark:text-slate-100 shadow-sm",
+      "bg-white/70 dark:bg-[#0D1C1E]/70 backdrop-blur-md border border-white/60 dark:border-[rgba(16,148,133,0.3)] hover:bg-white/90 dark:hover:bg-[#0D1C1E]/90 text-[#0F1C1A] dark:text-[#F2FAF8] shadow-sm",
   };
 
   return (

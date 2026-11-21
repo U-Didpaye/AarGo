@@ -32,28 +32,30 @@ export function Navbar() {
   ];
 
   return (
-    <header className="sticky top-0 z-50 w-full glass-panel border-b border-slate-200/80 dark:border-slate-800/80 bg-white/70 dark:bg-[#0B0D12]/80 backdrop-blur-xl">
+    <header className="sticky top-0 z-50 w-full glass-panel border-b border-[#DBE9E6]/80 dark:border-[rgba(16,148,133,0.25)] bg-[#F4F8F7]/80 dark:bg-[#071112]/85 backdrop-blur-xl">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-18 flex items-center justify-between">
-        {/* Brand Logo */}
-        <Link href="/" className="flex items-center gap-3 group">
-          <div className="w-10 h-10 rounded-xl bg-gradient-to-tr from-[#3D43C8] to-[#8C92FF] flex items-center justify-center text-white shadow-md shadow-[#3D43C8]/20 group-hover:scale-105 transition-transform">
-            <motion.div
-              animate={{ rotate: [0, 5, -5, 0] }}
-              transition={{ repeat: Infinity, duration: 6, ease: "easeInOut" }}
-            >
-              <Compass className="w-5 h-5" />
-            </motion.div>
+        {/* Brand Logo with HealthOrbit Dual-Ring Orbit Animation */}
+        <Link href="/" className="flex items-center gap-3.5 group">
+          <div className="relative w-10 h-10 flex items-center justify-center shrink-0">
+            {/* Outer Sage Ring */}
+            <div className="absolute inset-0 rounded-full border border-dashed border-[#0D7A6E] dark:border-[#2DD4BF] animate-spin-slow opacity-75" />
+            {/* Inner Coral/Cyan Ring */}
+            <div className="absolute inset-1 rounded-full border border-dashed border-[#E07A68] dark:border-[#38BDF8] animate-spin-reverse opacity-70" />
+            {/* Center Core Nucleus with Compass Icon */}
+            <div className="w-6 h-6 rounded-lg bg-gradient-to-tr from-[#0D7A6E] to-[#109485] dark:from-[#2DD4BF] dark:to-[#0284C7] flex items-center justify-center text-white shadow-sm z-10 group-hover:scale-105 transition-transform">
+              <Compass className="w-3.5 h-3.5 dark:text-[#071112]" />
+            </div>
           </div>
           <div>
             <div className="flex items-center gap-2">
-              <span className="font-bold text-lg tracking-tight text-slate-900 dark:text-white">
-                Aarogya<span className="text-[#3D43C8] dark:text-[#A5AAFF]">Go</span>
+              <span className="font-extrabold text-lg tracking-tight text-[#0F1C1A] dark:text-[#F2FAF8]">
+                Aarogya<span className="text-[#0D7A6E] dark:text-[#2DD4BF]">Go</span>
               </span>
-              <span className="text-[10px] px-1.5 py-0.5 rounded-md font-semibold bg-indigo-50 text-indigo-700 dark:bg-indigo-950/60 dark:text-indigo-300 border border-indigo-200/60 dark:border-indigo-800/50">
+              <span className="text-[10px] px-1.5 py-0.5 rounded-md font-bold bg-[#DAF0EC] text-[#0D7A6E] dark:bg-[rgba(45,212,191,0.15)] dark:text-[#2DD4BF] border border-[#BCE1D8] dark:border-[rgba(45,212,191,0.3)]">
                 NFSU
               </span>
             </div>
-            <p className="text-[10px] text-slate-500 dark:text-slate-400 font-medium tracking-wide">
+            <p className="text-[10px] text-[#4E6B63] dark:text-[#8FA8A1] font-medium tracking-wide">
               Healthcare Without Borders
             </p>
           </div>
@@ -68,23 +70,23 @@ export function Navbar() {
               <Link
                 key={link.href}
                 href={link.href}
-                className={`relative px-3.5 py-2 rounded-xl text-sm font-medium transition-all flex items-center gap-2 ${
+                className={`relative px-3.5 py-2 rounded-xl text-sm font-semibold transition-all flex items-center gap-2 ${
                   isActive
-                    ? "text-[#3D43C8] dark:text-[#A5AAFF] bg-[#3D43C8]/10 dark:bg-[#A5AAFF]/15"
-                    : "text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white hover:bg-slate-100/70 dark:hover:bg-slate-800/50"
+                    ? "text-[#0D7A6E] dark:text-[#2DD4BF] bg-[#DAF0EC]/80 dark:bg-[rgba(45,212,191,0.12)]"
+                    : "text-[#4E6B63] dark:text-[#8FA8A1] hover:text-[#0F1C1A] dark:hover:text-[#F2FAF8] hover:bg-[#DAF0EC]/40 dark:hover:bg-[#0D1C1E]/60"
                 }`}
               >
                 <Icon className="w-4 h-4" />
                 <span>{link.label}</span>
                 {link.badge && (
-                  <span className="text-[10px] uppercase font-bold px-1.5 py-0.2 rounded-full bg-gradient-to-r from-purple-500 to-indigo-600 text-white">
+                  <span className="text-[10px] uppercase font-extrabold px-1.5 py-0.2 rounded-full bg-gradient-to-r from-[#E07A68] to-[#EA580C] text-white shadow-xs">
                     {link.badge}
                   </span>
                 )}
                 {isActive && (
                   <motion.div
                     layoutId="navbar-active-pill"
-                    className="absolute inset-0 rounded-xl border border-[#3D43C8]/30 dark:border-[#A5AAFF]/40 -z-10"
+                    className="absolute inset-0 rounded-xl border border-[#0D7A6E]/30 dark:border-[#2DD4BF]/40 -z-10"
                     transition={{ type: "spring", stiffness: 350, damping: 30 }}
                   />
                 )}
@@ -99,7 +101,7 @@ export function Navbar() {
           <button
             onClick={toggleTheme}
             aria-label="Toggle theme"
-            className="p-2.5 rounded-xl text-slate-600 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-slate-800 transition-colors"
+            className="p-2.5 rounded-xl text-[#4E6B63] dark:text-[#8FA8A1] hover:bg-[#DAF0EC]/60 dark:hover:bg-[#0D1C1E] transition-colors"
           >
             {theme === "light" ? (
               <Moon className="w-4.5 h-4.5" />
@@ -118,7 +120,7 @@ export function Navbar() {
           {/* Mobile Menu Hamburger */}
           <button
             onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
-            className="md:hidden p-2 rounded-xl text-slate-600 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-slate-800"
+            className="md:hidden p-2 rounded-xl text-[#4E6B63] dark:text-[#8FA8A1] hover:bg-[#DAF0EC]/50 dark:hover:bg-[#0D1C1E]"
           >
             {mobileMenuOpen ? <X className="w-5 h-5" /> : <Menu className="w-5 h-5" />}
           </button>
@@ -132,7 +134,7 @@ export function Navbar() {
             initial={{ opacity: 0, height: 0 }}
             animate={{ opacity: 1, height: "auto" }}
             exit={{ opacity: 0, height: 0 }}
-            className="md:hidden border-t border-slate-200 dark:border-slate-800 bg-white/95 dark:bg-[#0B0D12]/95 backdrop-blur-xl px-4 py-4 space-y-2"
+            className="md:hidden border-t border-[#DBE9E6] dark:border-[rgba(16,148,133,0.25)] bg-[#F4F8F7]/95 dark:bg-[#071112]/95 backdrop-blur-xl px-4 py-4 space-y-2"
           >
             {navLinks.map((link) => {
               const Icon = link.icon;
@@ -142,10 +144,10 @@ export function Navbar() {
                   key={link.href}
                   href={link.href}
                   onClick={() => setMobileMenuOpen(false)}
-                  className={`flex items-center justify-between p-3 rounded-xl text-sm font-medium ${
+                  className={`flex items-center justify-between p-3 rounded-xl text-sm font-semibold ${
                     isActive
-                      ? "text-[#3D43C8] dark:text-[#A5AAFF] bg-[#3D43C8]/10 dark:bg-[#A5AAFF]/15"
-                      : "text-slate-700 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-slate-800/60"
+                      ? "text-[#0D7A6E] dark:text-[#2DD4BF] bg-[#DAF0EC] dark:bg-[rgba(45,212,191,0.15)]"
+                      : "text-[#4E6B63] dark:text-[#8FA8A1] hover:bg-[#DAF0EC]/50 dark:hover:bg-[#0D1C1E]"
                   }`}
                 >
                   <div className="flex items-center gap-3">
@@ -153,7 +155,7 @@ export function Navbar() {
                     <span>{link.label}</span>
                   </div>
                   {link.badge && (
-                    <span className="text-[10px] font-bold px-2 py-0.5 rounded-full bg-indigo-600 text-white">
+                    <span className="text-[10px] font-bold px-2 py-0.5 rounded-full bg-[#E07A68] text-white">
                       {link.badge}
                     </span>
                   )}

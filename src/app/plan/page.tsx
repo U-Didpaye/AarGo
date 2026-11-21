@@ -138,7 +138,6 @@ function PlanVisitContent() {
     saveRequest(newRequest);
     setSubmittedRequest(newRequest);
 
-    // Trigger celebratory confetti
     try {
       confetti({
         particleCount: 100,
@@ -158,8 +157,8 @@ function PlanVisitContent() {
           animate={{ opacity: 1, scale: 1 }}
           transition={{ duration: 0.5, ease: [0.16, 1, 0.3, 1] }}
         >
-          <GlassCard className="p-8 sm:p-12 border-emerald-300 dark:border-emerald-800">
-            <div className="w-16 h-16 rounded-full bg-emerald-100 dark:bg-emerald-950/60 text-emerald-600 dark:text-emerald-400 flex items-center justify-center mx-auto mb-4">
+          <GlassCard className="p-8 sm:p-12 border-[#109485] dark:border-[#2DD4BF]/50 card-shine">
+            <div className="w-16 h-16 rounded-full bg-[#DAF0EC] dark:bg-[rgba(45,212,191,0.15)] text-[#0D7A6E] dark:text-[#2DD4BF] flex items-center justify-center mx-auto mb-4">
               <CheckCircle2 className="w-10 h-10" />
             </div>
 
@@ -167,20 +166,20 @@ function PlanVisitContent() {
               Journey Request Created
             </Badge>
 
-            <h2 className="text-2xl sm:text-3xl font-extrabold text-slate-900 dark:text-white mt-3">
+            <h2 className="text-2xl sm:text-3xl font-extrabold text-[#0F1C1A] dark:text-[#F2FAF8] mt-3">
               Your Visit is Being Coordinated!
             </h2>
 
-            <div className="my-6 p-4 rounded-xl bg-slate-100/80 dark:bg-slate-800/60 border border-slate-200 dark:border-slate-700 max-w-sm mx-auto">
-              <span className="text-xs text-slate-500 dark:text-slate-400 uppercase tracking-wider block">
+            <div className="my-6 p-4 rounded-xl bg-[#DAF0EC]/60 dark:bg-[#0D1C1E] border border-[#BCE1D8] dark:border-[rgba(16,148,133,0.3)] max-w-sm mx-auto">
+              <span className="text-xs text-[#4E6B63] dark:text-[#8FA8A1] uppercase tracking-wider block font-bold">
                 Unique Tracking Reference
               </span>
-              <span className="text-xl font-mono font-bold text-[#3D43C8] dark:text-[#A5AAFF]">
+              <span className="text-xl font-mono font-bold text-[#0D7A6E] dark:text-[#2DD4BF]">
                 {submittedRequest.id}
               </span>
             </div>
 
-            <p className="text-sm text-slate-600 dark:text-slate-300 max-w-md mx-auto leading-relaxed">
+            <p className="text-sm text-[#4E6B63] dark:text-[#8FA8A1] max-w-md mx-auto leading-relaxed">
               We have recorded your non-clinical coordination request for <strong>{submittedRequest.selectedHospitalName}</strong> on <strong>{submittedRequest.preferredDate}</strong>.
             </p>
 
@@ -197,7 +196,7 @@ function PlanVisitContent() {
                   submittedRequest.destinationCity
                 )}&date=${encodeURIComponent(submittedRequest.preferredDate)}`}
               >
-                <Button variant="outline" size="lg" icon={<Sparkles className="w-4 h-4 text-indigo-500" />}>
+                <Button variant="secondary" size="lg" icon={<Sparkles className="w-4 h-4 text-[#E07A68]" />}>
                   Prepare with Gemini AI
                 </Button>
               </Link>
@@ -214,15 +213,15 @@ function PlanVisitContent() {
       <div className="mb-8">
         <FadeIn>
           <div className="flex items-center gap-2 mb-2">
-            <span className="text-xs font-bold uppercase tracking-wider text-[#3D43C8] dark:text-[#A5AAFF]">
+            <span className="text-xs font-bold uppercase tracking-wider text-[#0D7A6E] dark:text-[#2DD4BF]">
               Visit Planning
             </span>
             <Badge variant="secondary">Step {step} of 3</Badge>
           </div>
-          <h1 className="text-3xl font-extrabold text-slate-900 dark:text-white">
+          <h1 className="text-3xl font-extrabold text-[#0F1C1A] dark:text-[#F2FAF8]">
             Coordinate Your Medical Visit
           </h1>
-          <p className="text-sm text-slate-600 dark:text-slate-400 mt-1">
+          <p className="text-sm text-[#4E6B63] dark:text-[#8FA8A1] mt-1">
             Specify your destination, dates, and non-clinical support needs so your journey can be facilitated seamlessly.
           </p>
         </FadeIn>
@@ -242,19 +241,19 @@ function PlanVisitContent() {
             }}
             className={`p-3 rounded-xl border text-center transition-all ${
               step === item.num
-                ? "bg-[#3D43C8]/10 dark:bg-[#A5AAFF]/15 border-[#3D43C8] dark:border-[#A5AAFF] text-[#3D43C8] dark:text-[#A5AAFF] font-semibold"
+                ? "bg-[#DAF0EC] dark:bg-[rgba(45,212,191,0.15)] border-[#0D7A6E] dark:border-[#2DD4BF] text-[#0D7A6E] dark:text-[#2DD4BF] font-bold shadow-xs"
                 : step > item.num
-                ? "bg-slate-100 dark:bg-slate-800/80 border-slate-300 dark:border-slate-700 text-slate-700 dark:text-slate-300 cursor-pointer"
-                : "bg-transparent border-slate-200 dark:border-slate-800 text-slate-400 cursor-not-allowed"
+                ? "bg-white/80 dark:bg-[#0D1C1E] border-[#DBE9E6] dark:border-[rgba(16,148,133,0.3)] text-[#4E6B63] dark:text-[#8FA8A1] cursor-pointer"
+                : "bg-transparent border-[#DBE9E6]/60 dark:border-slate-800 text-[#4E6B63]/50 cursor-not-allowed"
             }`}
           >
             <span className="text-xs block font-mono">Step 0{item.num}</span>
-            <span className="text-xs sm:text-sm truncate">{item.label}</span>
+            <span className="text-xs sm:text-sm truncate font-medium">{item.label}</span>
           </div>
         ))}
       </div>
 
-      <GlassCard className="p-6 sm:p-8">
+      <GlassCard className="p-6 sm:p-8 card-shine">
         <form onSubmit={handleSubmit} className="space-y-6">
           {/* STEP 1: PATIENT & CONTACT */}
           {step === 1 && (
@@ -264,13 +263,13 @@ function PlanVisitContent() {
               exit={{ opacity: 0, x: -10 }}
               className="space-y-5"
             >
-              <h3 className="text-lg font-bold text-slate-900 dark:text-white flex items-center gap-2">
-                <User className="w-5 h-5 text-[#3D43C8] dark:text-[#A5AAFF]" />
+              <h3 className="text-lg font-bold text-[#0F1C1A] dark:text-[#F2FAF8] flex items-center gap-2">
+                <User className="w-5 h-5 text-[#0D7A6E] dark:text-[#2DD4BF]" />
                 <span>Patient & Contact Details</span>
               </h3>
 
               <div>
-                <label className="block text-xs font-semibold text-slate-700 dark:text-slate-300 mb-1">
+                <label className="block text-xs font-bold text-[#0F1C1A] dark:text-[#F2FAF8] mb-1">
                   Full Name of Patient *
                 </label>
                 <input
@@ -278,7 +277,7 @@ function PlanVisitContent() {
                   placeholder="e.g. Rameshwar Sharma"
                   value={patientName}
                   onChange={(e) => setPatientName(e.target.value)}
-                  className="w-full px-4 py-2.5 rounded-xl text-sm bg-white dark:bg-[#151821] border border-slate-200 dark:border-slate-800 focus:outline-none focus:ring-2 focus:ring-[#3D43C8]/40 text-slate-900 dark:text-white"
+                  className="w-full px-4 py-2.5 rounded-xl text-sm bg-white dark:bg-[#0D1C1E] border border-[#DBE9E6] dark:border-[rgba(16,148,133,0.3)] focus:outline-none focus:ring-2 focus:ring-[#0D7A6E]/40 text-[#0F1C1A] dark:text-[#F2FAF8]"
                 />
                 {errors.patientName && (
                   <p className="text-xs text-rose-500 mt-1">{errors.patientName}</p>
@@ -287,7 +286,7 @@ function PlanVisitContent() {
 
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                 <div>
-                  <label className="block text-xs font-semibold text-slate-700 dark:text-slate-300 mb-1">
+                  <label className="block text-xs font-bold text-[#0F1C1A] dark:text-[#F2FAF8] mb-1">
                     Contact Phone Number *
                   </label>
                   <input
@@ -295,7 +294,7 @@ function PlanVisitContent() {
                     placeholder="e.g. +91 98223 45110"
                     value={contactPhone}
                     onChange={(e) => setContactPhone(e.target.value)}
-                    className="w-full px-4 py-2.5 rounded-xl text-sm bg-white dark:bg-[#151821] border border-slate-200 dark:border-slate-800 focus:outline-none focus:ring-2 focus:ring-[#3D43C8]/40 text-slate-900 dark:text-white"
+                    className="w-full px-4 py-2.5 rounded-xl text-sm bg-white dark:bg-[#0D1C1E] border border-[#DBE9E6] dark:border-[rgba(16,148,133,0.3)] focus:outline-none focus:ring-2 focus:ring-[#0D7A6E]/40 text-[#0F1C1A] dark:text-[#F2FAF8]"
                   />
                   {errors.contactPhone && (
                     <p className="text-xs text-rose-500 mt-1">{errors.contactPhone}</p>
@@ -303,7 +302,7 @@ function PlanVisitContent() {
                 </div>
 
                 <div>
-                  <label className="block text-xs font-semibold text-slate-700 dark:text-slate-300 mb-1">
+                  <label className="block text-xs font-bold text-[#0F1C1A] dark:text-[#F2FAF8] mb-1">
                     Email Address (Optional)
                   </label>
                   <input
@@ -311,13 +310,13 @@ function PlanVisitContent() {
                     placeholder="e.g. patient@example.com"
                     value={contactEmail}
                     onChange={(e) => setContactEmail(e.target.value)}
-                    className="w-full px-4 py-2.5 rounded-xl text-sm bg-white dark:bg-[#151821] border border-slate-200 dark:border-slate-800 focus:outline-none focus:ring-2 focus:ring-[#3D43C8]/40 text-slate-900 dark:text-white"
+                    className="w-full px-4 py-2.5 rounded-xl text-sm bg-white dark:bg-[#0D1C1E] border border-[#DBE9E6] dark:border-[rgba(16,148,133,0.3)] focus:outline-none focus:ring-2 focus:ring-[#0D7A6E]/40 text-[#0F1C1A] dark:text-[#F2FAF8]"
                   />
                 </div>
               </div>
 
               <div>
-                <label className="block text-xs font-semibold text-slate-700 dark:text-slate-300 mb-1">
+                <label className="block text-xs font-bold text-[#0F1C1A] dark:text-[#F2FAF8] mb-1">
                   Traveling From (Origin City / Town) *
                 </label>
                 <input
@@ -325,7 +324,7 @@ function PlanVisitContent() {
                   placeholder="e.g. Raipur, Chhattisgarh or Amravati, Maharashtra"
                   value={travelOriginCity}
                   onChange={(e) => setTravelOriginCity(e.target.value)}
-                  className="w-full px-4 py-2.5 rounded-xl text-sm bg-white dark:bg-[#151821] border border-slate-200 dark:border-slate-800 focus:outline-none focus:ring-2 focus:ring-[#3D43C8]/40 text-slate-900 dark:text-white"
+                  className="w-full px-4 py-2.5 rounded-xl text-sm bg-white dark:bg-[#0D1C1E] border border-[#DBE9E6] dark:border-[rgba(16,148,133,0.3)] focus:outline-none focus:ring-2 focus:ring-[#0D7A6E]/40 text-[#0F1C1A] dark:text-[#F2FAF8]"
                 />
                 {errors.travelOriginCity && (
                   <p className="text-xs text-rose-500 mt-1">{errors.travelOriginCity}</p>
@@ -348,14 +347,14 @@ function PlanVisitContent() {
               exit={{ opacity: 0, x: -10 }}
               className="space-y-5"
             >
-              <h3 className="text-lg font-bold text-slate-900 dark:text-white flex items-center gap-2">
-                <Building2 className="w-5 h-5 text-[#3D43C8] dark:text-[#A5AAFF]" />
+              <h3 className="text-lg font-bold text-[#0F1C1A] dark:text-[#F2FAF8] flex items-center gap-2">
+                <Building2 className="w-5 h-5 text-[#0D7A6E] dark:text-[#2DD4BF]" />
                 <span>Destination & Visit Timing</span>
               </h3>
 
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                 <div>
-                  <label className="block text-xs font-semibold text-slate-700 dark:text-slate-300 mb-1">
+                  <label className="block text-xs font-bold text-[#0F1C1A] dark:text-[#F2FAF8] mb-1">
                     Destination City
                   </label>
                   <select
@@ -366,7 +365,7 @@ function PlanVisitContent() {
                       const matched = SAMPLE_HOSPITALS.find((h) => h.city === city);
                       if (matched) setSelectedHospitalId(matched.id);
                     }}
-                    className="w-full px-4 py-2.5 rounded-xl text-sm bg-white dark:bg-[#151821] border border-slate-200 dark:border-slate-800 text-slate-900 dark:text-white"
+                    className="w-full px-4 py-2.5 rounded-xl text-sm bg-white dark:bg-[#0D1C1E] border border-[#DBE9E6] dark:border-[rgba(16,148,133,0.3)] text-[#0F1C1A] dark:text-[#F2FAF8]"
                   >
                     {CITIES.filter((c) => c !== "All Cities").map((c) => (
                       <option key={c} value={c}>
@@ -377,13 +376,13 @@ function PlanVisitContent() {
                 </div>
 
                 <div>
-                  <label className="block text-xs font-semibold text-slate-700 dark:text-slate-300 mb-1">
+                  <label className="block text-xs font-bold text-[#0F1C1A] dark:text-[#F2FAF8] mb-1">
                     Selected Hospital Center *
                   </label>
                   <select
                     value={selectedHospitalId}
                     onChange={(e) => setSelectedHospitalId(e.target.value)}
-                    className="w-full px-4 py-2.5 rounded-xl text-sm bg-white dark:bg-[#151821] border border-slate-200 dark:border-slate-800 text-slate-900 dark:text-white"
+                    className="w-full px-4 py-2.5 rounded-xl text-sm bg-white dark:bg-[#0D1C1E] border border-[#DBE9E6] dark:border-[rgba(16,148,133,0.3)] text-[#0F1C1A] dark:text-[#F2FAF8]"
                   >
                     {SAMPLE_HOSPITALS.filter(
                       (h) => h.city.toLowerCase() === selectedCity.toLowerCase()
@@ -398,14 +397,14 @@ function PlanVisitContent() {
 
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                 <div>
-                  <label className="block text-xs font-semibold text-slate-700 dark:text-slate-300 mb-1">
+                  <label className="block text-xs font-bold text-[#0F1C1A] dark:text-[#F2FAF8] mb-1">
                     Preferred Visit Date *
                   </label>
                   <input
                     type="date"
                     value={preferredDate}
                     onChange={(e) => setPreferredDate(e.target.value)}
-                    className="w-full px-4 py-2.5 rounded-xl text-sm bg-white dark:bg-[#151821] border border-slate-200 dark:border-slate-800 text-slate-900 dark:text-white"
+                    className="w-full px-4 py-2.5 rounded-xl text-sm bg-white dark:bg-[#0D1C1E] border border-[#DBE9E6] dark:border-[rgba(16,148,133,0.3)] text-[#0F1C1A] dark:text-[#F2FAF8]"
                   />
                   {errors.preferredDate && (
                     <p className="text-xs text-rose-500 mt-1">{errors.preferredDate}</p>
@@ -413,14 +412,14 @@ function PlanVisitContent() {
                 </div>
 
                 <div>
-                  <label className="block text-xs font-semibold text-slate-700 dark:text-slate-300 mb-1">
+                  <label className="block text-xs font-bold text-[#0F1C1A] dark:text-[#F2FAF8] mb-1">
                     Alternate / Buffer Date (Optional)
                   </label>
                   <input
                     type="date"
                     value={alternateDate}
                     onChange={(e) => setAlternateDate(e.target.value)}
-                    className="w-full px-4 py-2.5 rounded-xl text-sm bg-white dark:bg-[#151821] border border-slate-200 dark:border-slate-800 text-slate-900 dark:text-white"
+                    className="w-full px-4 py-2.5 rounded-xl text-sm bg-white dark:bg-[#0D1C1E] border border-[#DBE9E6] dark:border-[rgba(16,148,133,0.3)] text-[#0F1C1A] dark:text-[#F2FAF8]"
                   />
                 </div>
               </div>
@@ -444,7 +443,7 @@ function PlanVisitContent() {
               exit={{ opacity: 0, x: -10 }}
               className="space-y-6"
             >
-              <h3 className="text-lg font-bold text-slate-900 dark:text-white">
+              <h3 className="text-lg font-bold text-[#0F1C1A] dark:text-[#F2FAF8]">
                 Non-Clinical Facilitation Services Needed
               </h3>
 
@@ -459,7 +458,7 @@ function PlanVisitContent() {
                   {
                     key: "accommodationSupport",
                     title: "Lodging & Accommodations",
-                    desc: "Guest house or Dharmashala options within 3 km.",
+                    desc: "Guest house or Dharmashalas options within 3 km.",
                     icon: Hotel,
                   },
                   {
@@ -495,24 +494,24 @@ function PlanVisitContent() {
                       onClick={() => toggleService(item.key as keyof ServiceRequirements)}
                       className={`p-4 rounded-xl border cursor-pointer transition-all flex items-start gap-3 ${
                         isChecked
-                          ? "bg-[#3D43C8]/10 dark:bg-[#A5AAFF]/15 border-[#3D43C8]/50 dark:border-[#A5AAFF]/60"
-                          : "bg-white/60 dark:bg-slate-800/40 border-slate-200 dark:border-slate-800 hover:border-slate-300"
+                          ? "bg-[#DAF0EC] dark:bg-[rgba(45,212,191,0.15)] border-[#0D7A6E] dark:border-[#2DD4BF]"
+                          : "bg-white/70 dark:bg-[#0D1C1E]/60 border-[#DBE9E6] dark:border-[rgba(16,148,133,0.25)] hover:border-[#0D7A6E]/40"
                       }`}
                     >
                       <input
                         type="checkbox"
                         checked={isChecked}
                         onChange={() => {}}
-                        className="mt-1 w-4 h-4 text-[#3D43C8] rounded accent-[#3D43C8]"
+                        className="mt-1 w-4 h-4 text-[#0D7A6E] rounded accent-[#0D7A6E]"
                       />
                       <div>
                         <div className="flex items-center gap-1.5">
-                          <Icon className="w-4 h-4 text-[#3D43C8] dark:text-[#A5AAFF]" />
-                          <h4 className="text-xs font-bold text-slate-900 dark:text-white">
+                          <Icon className="w-4 h-4 text-[#0D7A6E] dark:text-[#2DD4BF]" />
+                          <h4 className="text-xs font-bold text-[#0F1C1A] dark:text-[#F2FAF8]">
                             {item.title}
                           </h4>
                         </div>
-                        <p className="text-[11px] text-slate-500 dark:text-slate-400 mt-1 leading-snug">
+                        <p className="text-[11px] text-[#4E6B63] dark:text-[#8FA8A1] mt-1 leading-snug">
                           {item.desc}
                         </p>
                       </div>
@@ -522,7 +521,7 @@ function PlanVisitContent() {
               </div>
 
               <div>
-                <label className="block text-xs font-semibold text-slate-700 dark:text-slate-300 mb-1">
+                <label className="block text-xs font-bold text-[#0F1C1A] dark:text-[#F2FAF8] mb-1">
                   Language Preference for Coordinator
                 </label>
                 <input
@@ -530,12 +529,12 @@ function PlanVisitContent() {
                   placeholder="e.g. Hindi, Marathi, Bengali, English"
                   value={languagePreference}
                   onChange={(e) => setLanguagePreference(e.target.value)}
-                  className="w-full px-4 py-2.5 rounded-xl text-sm bg-white dark:bg-[#151821] border border-slate-200 dark:border-slate-800 text-slate-900 dark:text-white"
+                  className="w-full px-4 py-2.5 rounded-xl text-sm bg-white dark:bg-[#0D1C1E] border border-[#DBE9E6] dark:border-[rgba(16,148,133,0.3)] text-[#0F1C1A] dark:text-[#F2FAF8]"
                 />
               </div>
 
               <div>
-                <label className="block text-xs font-semibold text-slate-700 dark:text-slate-300 mb-1">
+                <label className="block text-xs font-bold text-[#0F1C1A] dark:text-[#F2FAF8] mb-1">
                   Additional Non-Clinical Notes (Optional)
                 </label>
                 <textarea
@@ -543,13 +542,13 @@ function PlanVisitContent() {
                   placeholder="e.g. Elderly patient, needs elevator access, arriving on early morning train."
                   value={specialNotes}
                   onChange={(e) => setSpecialNotes(e.target.value)}
-                  className="w-full px-4 py-2.5 rounded-xl text-sm bg-white dark:bg-[#151821] border border-slate-200 dark:border-slate-800 text-slate-900 dark:text-white"
+                  className="w-full px-4 py-2.5 rounded-xl text-sm bg-white dark:bg-[#0D1C1E] border border-[#DBE9E6] dark:border-[rgba(16,148,133,0.3)] text-[#0F1C1A] dark:text-[#F2FAF8]"
                 />
               </div>
 
-              {/* Non-clinical reminder banner */}
-              <div className="p-3.5 rounded-xl bg-amber-500/10 border border-amber-500/20 text-xs text-amber-800 dark:text-amber-300 flex items-start gap-2">
-                <ShieldAlert className="w-4 h-4 text-amber-600 dark:text-amber-400 shrink-0 mt-0.5" />
+              {/* Non-clinical reminder banner with HealthOrbit Coral styling */}
+              <div className="p-3.5 rounded-xl bg-[#FBE4DE] dark:bg-[rgba(224,122,104,0.18)] border border-[#F8C8BD] dark:border-[rgba(224,122,104,0.3)] text-xs text-[#9C3826] dark:text-[#F8A393] flex items-start gap-2">
+                <ShieldAlert className="w-4 h-4 text-[#E07A68] shrink-0 mt-0.5" />
                 <span>
                   Reminder: AarogyaGo coordinates practical visit logistics, lodging, and reception facilitation only. We do not provide clinical treatment or diagnosis.
                 </span>
@@ -573,7 +572,7 @@ function PlanVisitContent() {
 
 export default function PlanPage() {
   return (
-    <Suspense fallback={<div className="p-12 text-center text-sm text-slate-500">Loading visit planner...</div>}>
+    <Suspense fallback={<div className="p-12 text-center text-sm text-[#4E6B63]">Loading visit planner...</div>}>
       <PlanVisitContent />
     </Suspense>
   );
