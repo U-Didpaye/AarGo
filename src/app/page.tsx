@@ -1,6 +1,6 @@
 "use client";
 
-import React from "react";
+import React, { useState, useEffect } from "react";
 import Link from "next/link";
 import { motion } from "framer-motion";
 import {
@@ -22,8 +22,31 @@ import { GlassCard } from "@/components/ui/GlassCard";
 import { Badge } from "@/components/ui/Badge";
 import { FadeIn, StaggerContainer, StaggerItem } from "@/components/motion/MotionWrapper";
 import { SAMPLE_HOSPITALS } from "@/features/hospitals/data";
+import { getStoredRequests, JOURNEY_STORAGE_EVENT } from "@/features/journey/storage";
+import { VisitRequest } from "@/features/journey/types";
+import { formatDate } from "@/lib/utils";
 
 export default function HomePage() {
+  const [activeJourney, setActiveJourney] = useState<VisitRequest | null>(null);
+
+  useEffect(() => {
+    const checkRequests = () => {
+      const stored = getStoredRequests();
+      if (stored.length > 0) {
+        setActiveJourney(stored[0]);
+      }
+    };
+
+    checkRequests();
+    window.addEventListener("storage", checkRequests);
+    window.addEventListener(JOURNEY_STORAGE_EVENT, checkRequests);
+
+    return () => {
+      window.removeEventListener("storage", checkRequests);
+      window.removeEventListener(JOURNEY_STORAGE_EVENT, checkRequests);
+    };
+  }, []);
+
   const pillars = [
     {
       title: "Hospital Discovery",
@@ -85,6 +108,21 @@ export default function HomePage() {
       desc: "Monitor coordination milestones and receive updates before and during your travel.",
     },
   ];
+
+  const getProgressPercentage = (status: string) => {
+    switch (status) {
+      case "Request Submitted":
+        return "25%";
+      case "Under Review":
+        return "50%";
+      case "Hospital Contacted":
+        return "75%";
+      case "Appointment Update":
+        return "100%";
+      default:
+        return "50%";
+    }
+  };
 
   return (
     <div className="relative overflow-hidden">
@@ -166,7 +204,7 @@ export default function HomePage() {
             </FadeIn>
           </div>
 
-          {/* Right Visual Card Column - HealthOrbit Mirror-Shine Glass Card */}
+          {/* Right Visual Card Column - Dynamic Journey Preview */}
           <div className="lg:col-span-5">
             <FadeIn delay={0.3} direction="left">
               <div className="relative">
@@ -185,40 +223,48 @@ export default function HomePage() {
                       </div>
                       <div>
                         <h3 className="font-bold text-sm text-[#0F1C1A] dark:text-[#F2FAF8]">
-                          Sample Journey Preview
+                          {activeJourney ? `Active Journey: ${activeJourney.id}` : "Sample Journey Preview"}
                         </h3>
                         <p className="text-xs text-[#4E6B63] dark:text-[#8FA8A1]">
-                          Illustrative example · not live data
+                          {activeJourney ? `Patient: ${activeJourney.patientName}` : "Illustrative example · not live data"}
                         </p>
                       </div>
                     </div>
-                    <Badge variant="illustrative">Sample data</Badge>
+                    <Badge variant={activeJourney ? "primary" : "illustrative"}>
+                      {activeJourney ? activeJourney.status : "Sample data"}
+                    </Badge>
                   </div>
 
                   {/* Summary items */}
                   <div className="space-y-3.5 text-xs">
                     <div className="flex justify-between py-1.5 border-b border-[#DBE9E6]/50 dark:border-[rgba(16,148,133,0.15)]">
                       <span className="text-[#4E6B63] dark:text-[#8FA8A1]">Destination</span>
-                      <span className="font-semibold text-[#0F1C1A] dark:text-[#F2FAF8]">
-                        AIIMS Nagpur
+                      <span className="font-semibold text-[#0F1C1A] dark:text-[#F2FAF8] truncate max-w-[200px]">
+                        {activeJourney ? activeJourney.selectedHospitalName : "AIIMS Nagpur"}
                       </span>
                     </div>
                     <div className="flex justify-between py-1.5 border-b border-[#DBE9E6]/50 dark:border-[rgba(16,148,133,0.15)]">
                       <span className="text-[#4E6B63] dark:text-[#8FA8A1]">Origin City</span>
                       <span className="font-semibold text-[#0F1C1A] dark:text-[#F2FAF8]">
-                        Raipur, Chhattisgarh
+                        {activeJourney ? activeJourney.travelOriginCity : "Raipur, Chhattisgarh"}
                       </span>
                     </div>
                     <div className="flex justify-between py-1.5 border-b border-[#DBE9E6]/50 dark:border-[rgba(16,148,133,0.15)]">
                       <span className="text-[#4E6B63] dark:text-[#8FA8A1]">Target Date</span>
                       <span className="font-semibold text-[#0F1C1A] dark:text-[#F2FAF8]">
-                        05 Dec 2026
+                        {activeJourney ? formatDate(activeJourney.preferredDate) : "05 Dec 2026"}
                       </span>
                     </div>
                     <div className="flex justify-between py-1.5">
                       <span className="text-[#4E6B63] dark:text-[#8FA8A1]">Services Active</span>
                       <span className="font-bold text-[#0D7A6E] dark:text-[#2DD4BF]">
-                        Stay + Wheelchair + Transit
+                        {activeJourney
+                          ? Object.entries(activeJourney.services)
+                              .filter(([, v]) => v)
+                              .map(([k]) => k.replace(/([A-Z])/g, " $1").trim())
+                              .slice(0, 2)
+                              .join(" + ") || "Basic Facilitation"
+                          : "Stay + Wheelchair + Transit"}
                       </span>
                     </div>
                   </div>
@@ -226,26 +272,26 @@ export default function HomePage() {
                   {/* Mini Timeline with Sage Gradient */}
                   <div className="pt-2">
                     <p className="text-[11px] font-bold text-[#0F1C1A] dark:text-[#F2FAF8] mb-2">
-                      Coordination Progress
+                      Coordination Progress ({activeJourney?.status || "Under Review"})
                     </p>
                     <div className="w-full bg-[#DAF0EC] dark:bg-[#13282B] h-2 rounded-full overflow-hidden">
                       <motion.div
                         initial={{ width: 0 }}
-                        animate={{ width: "50%" }}
+                        animate={{ width: getProgressPercentage(activeJourney?.status || "Under Review") }}
                         transition={{ duration: 1.2, ease: [0.16, 1, 0.3, 1] }}
                         className="bg-gradient-to-r from-[#0D7A6E] via-[#109485] to-[#2DD4BF] h-full rounded-full"
                       />
                     </div>
                     <div className="flex justify-between text-[10px] text-[#4E6B63] dark:text-[#8FA8A1] mt-1.5 font-medium">
                       <span>Submitted</span>
-                      <span className="text-[#0D7A6E] dark:text-[#2DD4BF] font-bold">Under Review</span>
-                      <span>Hospital Contact</span>
+                      <span className="text-[#0D7A6E] dark:text-[#2DD4BF] font-bold">Review</span>
+                      <span>Facilitated</span>
                     </div>
                   </div>
 
-                  <Link href="/journey" className="block pt-2">
+                  <Link href={activeJourney ? `/journey?id=${activeJourney.id}` : "/journey"} className="block pt-2">
                     <Button variant="secondary" size="sm" className="w-full" icon={<ArrowRight className="w-4 h-4" />}>
-                      View Full Journey Dashboard
+                      {activeJourney ? "Track Your Active Journey" : "View Full Journey Dashboard"}
                     </Button>
                   </Link>
                 </GlassCard>
@@ -327,7 +373,7 @@ export default function HomePage() {
         </div>
       </section>
 
-      {/* Gemini AI Assistant Spotlight with HealthOrbit Coral Warm Glow */}
+      {/* Gemini AI Assistant Spotlight */}
       <section className="py-16 px-4 sm:px-6 lg:px-8 max-w-7xl mx-auto">
         <GlassCard className="p-8 sm:p-12 border-[#DBE9E6] dark:border-[rgba(16,148,133,0.35)] bg-gradient-to-br from-[#EDF6F4]/70 via-white to-[#FBE4DE]/40 dark:from-[#0D1C1E] dark:via-[#0D1C1E] dark:to-[#162725]">
           <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 items-center">

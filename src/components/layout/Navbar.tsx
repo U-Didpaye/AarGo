@@ -62,8 +62,10 @@ export function Navbar() {
         </Link>
 
         {/* Desktop Nav Links */}
-        <nav aria-label="Main navigation"
-          className="hidden md:flex items-center gap-0.5 lg:gap-1 xl:gap-2">
+        <nav
+          aria-label="Main navigation"
+          className="hidden md:flex items-center gap-0.5 lg:gap-1 xl:gap-2"
+        >
           {navLinks.map((link) => {
             const Icon = link.icon;
             const isActive = pathname === link.href;
@@ -71,8 +73,9 @@ export function Navbar() {
               <Link
                 key={link.href}
                 href={link.href}
+                title={link.label}
                 aria-current={isActive ? "page" : undefined}
-                className={`relative px-2 lg:px-2.5 xl:px-3.5 py-2 rounded-xl text-sm font-semibold transition-all flex items-center gap-1.5 xl:gap-2 ${
+                className={`relative px-2.5 lg:px-3 xl:px-3.5 py-2 rounded-xl text-sm font-semibold transition-all flex items-center gap-1.5 xl:gap-2 ${
                   isActive
                     ? "text-[#0D7A6E] dark:text-[#2DD4BF] bg-[#DAF0EC]/80 dark:bg-[rgba(45,212,191,0.12)]"
                     : "text-[#4E6B63] dark:text-[#8FA8A1] hover:text-[#0F1C1A] dark:hover:text-[#F2FAF8] hover:bg-[#DAF0EC]/40 dark:hover:bg-[#0D1C1E]/60"
@@ -134,53 +137,64 @@ export function Navbar() {
         </div>
       </div>
 
-      {/* Mobile Drawer */}
+      {/* Mobile Backdrop & Drawer */}
       <AnimatePresence>
         {mobileMenuOpen && (
-          <motion.div
-            role="navigation"
-            initial={{ opacity: 0, height: 0 }}
-            animate={{ opacity: 1, height: "auto" }}
-            exit={{ opacity: 0, height: 0 }}
-            id="mobile-navigation"
-            aria-label="Mobile navigation"
-            className="md:hidden border-t border-[#DBE9E6] dark:border-[rgba(16,148,133,0.25)] bg-[#F4F8F7]/95 dark:bg-[#071112]/95 backdrop-blur-xl px-4 py-4 space-y-2"
-          >
-            {navLinks.map((link) => {
-              const Icon = link.icon;
-              const isActive = pathname === link.href;
-              return (
-                <Link
-                  key={link.href}
-                  href={link.href}
-                  aria-current={isActive ? "page" : undefined}
-                  onClick={() => setMobileMenuOpen(false)}
-                  className={`flex items-center justify-between p-3 rounded-xl text-sm font-semibold ${
-                    isActive
-                      ? "text-[#0D7A6E] dark:text-[#2DD4BF] bg-[#DAF0EC] dark:bg-[rgba(45,212,191,0.15)]"
-                      : "text-[#4E6B63] dark:text-[#8FA8A1] hover:bg-[#DAF0EC]/50 dark:hover:bg-[#0D1C1E]"
-                  }`}
-                >
-                  <div className="flex items-center gap-3">
-                    <Icon className="w-4 h-4" />
-                    <span>{link.label}</span>
-                  </div>
-                  {link.badge && (
-                    <span className="text-[10px] font-bold px-2 py-0.5 rounded-full bg-[#E07A68] text-white">
-                      {link.badge}
-                    </span>
-                  )}
+          <>
+            {/* Backdrop for tapping outside */}
+            <motion.div
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              exit={{ opacity: 0 }}
+              onClick={() => setMobileMenuOpen(false)}
+              className="fixed inset-0 top-18 bg-black/40 backdrop-blur-xs z-40 md:hidden"
+            />
+
+            <motion.div
+              role="navigation"
+              initial={{ opacity: 0, height: 0 }}
+              animate={{ opacity: 1, height: "auto" }}
+              exit={{ opacity: 0, height: 0 }}
+              id="mobile-navigation"
+              aria-label="Mobile navigation"
+              className="relative z-50 md:hidden border-t border-[#DBE9E6] dark:border-[rgba(16,148,133,0.25)] bg-[#F4F8F7]/95 dark:bg-[#071112]/95 backdrop-blur-xl px-4 py-4 space-y-2"
+            >
+              {navLinks.map((link) => {
+                const Icon = link.icon;
+                const isActive = pathname === link.href;
+                return (
+                  <Link
+                    key={link.href}
+                    href={link.href}
+                    aria-current={isActive ? "page" : undefined}
+                    onClick={() => setMobileMenuOpen(false)}
+                    className={`flex items-center justify-between p-3 rounded-xl text-sm font-semibold ${
+                      isActive
+                        ? "text-[#0D7A6E] dark:text-[#2DD4BF] bg-[#DAF0EC] dark:bg-[rgba(45,212,191,0.15)]"
+                        : "text-[#4E6B63] dark:text-[#8FA8A1] hover:bg-[#DAF0EC]/50 dark:hover:bg-[#0D1C1E]"
+                    }`}
+                  >
+                    <div className="flex items-center gap-3">
+                      <Icon className="w-4 h-4" />
+                      <span>{link.label}</span>
+                    </div>
+                    {link.badge && (
+                      <span className="text-[10px] font-bold px-2 py-0.5 rounded-full bg-[#E07A68] text-white">
+                        {link.badge}
+                      </span>
+                    )}
+                  </Link>
+                );
+              })}
+              <div className="pt-2">
+                <Link href="/plan" onClick={() => setMobileMenuOpen(false)}>
+                  <Button className="w-full" variant="primary">
+                    Start Planning
+                  </Button>
                 </Link>
-              );
-            })}
-            <div className="pt-2">
-              <Link href="/plan" onClick={() => setMobileMenuOpen(false)}>
-                <Button className="w-full" variant="primary">
-                  Start Planning
-                </Button>
-              </Link>
-            </div>
-          </motion.div>
+              </div>
+            </motion.div>
+          </>
         )}
       </AnimatePresence>
     </header>

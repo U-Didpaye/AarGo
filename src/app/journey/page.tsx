@@ -17,7 +17,7 @@ import {
   Printer,
   AlertCircle,
 } from "lucide-react";
-import { getStoredRequests } from "@/features/journey/storage";
+import { getStoredRequests, JOURNEY_STORAGE_EVENT } from "@/features/journey/storage";
 import { VisitRequest, JourneyStatus } from "@/features/journey/types";
 import { formatDate } from "@/lib/utils";
 import { Button } from "@/components/ui/Button";
@@ -41,25 +41,43 @@ function JourneyDashboardContent() {
   const [searchInput, setSearchInput] = useState("");
   const [errorMessage, setErrorMessage] = useState("");
 
-  useEffect(() => {
+  const refreshRequests = (preferredId?: string) => {
     const list = getStoredRequests();
     setAllRequests(list);
 
-    if (queryId) {
+    const targetId = preferredId || selectedRequest?.id || queryId;
+    if (targetId) {
       const match = list.find(
-        (r) => r.id.toLowerCase() === queryId.trim().toLowerCase()
+        (r) => r.id.toLowerCase() === targetId.trim().toLowerCase()
       );
       if (match) {
         setSelectedRequest(match);
         setSearchInput(match.id);
-      } else {
-        setErrorMessage(`Request ID "${queryId}" not found. Showing latest demo request.`);
-        if (list.length > 0) setSelectedRequest(list[0]);
+        return;
       }
-    } else if (list.length > 0) {
+    }
+
+    if (list.length > 0 && !selectedRequest) {
       setSelectedRequest(list[0]);
       setSearchInput(list[0].id);
     }
+  };
+
+  useEffect(() => {
+    refreshRequests(queryId || undefined);
+
+    const handleSync = () => {
+      refreshRequests();
+    };
+
+    window.addEventListener("storage", handleSync);
+    window.addEventListener(JOURNEY_STORAGE_EVENT, handleSync);
+
+    return () => {
+      window.removeEventListener("storage", handleSync);
+      window.removeEventListener(JOURNEY_STORAGE_EVENT, handleSync);
+    };
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [queryId]);
 
   const handleSearch = (e: React.FormEvent) => {
@@ -85,7 +103,7 @@ function JourneyDashboardContent() {
   return (
     <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 py-10">
       {/* Header */}
-      <div className="mb-8">
+      <div className="mb-8 no-print">
         <FadeIn>
           <div className="flex items-center gap-2 mb-2">
             <span className="text-xs font-bold uppercase tracking-wider text-[#0D7A6E] dark:text-[#2DD4BF]">
@@ -97,13 +115,13 @@ function JourneyDashboardContent() {
             My Medical Journey Tracker
           </h1>
           <p className="text-sm text-[#4E6B63] dark:text-[#8FA8A1] mt-1">
-            Explore sample non-clinical milestones for a planned visit. Demo requests and status changes are saved only in this browser; they are not shared or live.
+            Explore live non-clinical milestones for your planned visit. Changes updated in the Coordinator Desk sync here automatically.
           </p>
         </FadeIn>
       </div>
 
       {/* Search Bar & Switcher */}
-      <div className="mb-8 flex flex-col md:flex-row gap-4 items-stretch md:items-center justify-between">
+      <div className="mb-8 flex flex-col md:flex-row gap-4 items-stretch md:items-center justify-between no-print">
         <form onSubmit={handleSearch} className="flex gap-2 flex-1 max-w-md">
           <div className="relative flex-1">
             <Search className="w-4 h-4 absolute left-3.5 top-1/2 -translate-y-1/2 text-[#4E6B63] dark:text-[#8FA8A1]" />
@@ -128,6 +146,7 @@ function JourneyDashboardContent() {
             {allRequests.slice(0, 4).map((r) => (
               <button
                 key={r.id}
+                type="button"
                 onClick={() => {
                   setSelectedRequest(r);
                   setSearchInput(r.id);
@@ -147,7 +166,7 @@ function JourneyDashboardContent() {
       </div>
 
       {errorMessage && (
-        <div className="mb-6 p-4 rounded-xl bg-rose-50 dark:bg-rose-950/40 border border-rose-200 dark:border-rose-900 text-xs text-rose-700 dark:text-rose-300 flex items-center gap-2">
+        <div className="mb-6 p-4 rounded-xl bg-rose-50 dark:bg-rose-950/40 border border-rose-200 dark:border-rose-900 text-xs text-rose-700 dark:text-rose-300 flex items-center gap-2 no-print">
           <AlertCircle className="w-4 h-4 shrink-0" />
           <span>{errorMessage}</span>
         </div>
@@ -184,7 +203,7 @@ function JourneyDashboardContent() {
                 </div>
               </div>
 
-              <div className="flex items-center gap-2 self-start sm:self-center">
+              <div className="flex items-center gap-2 self-start sm:self-center no-print">
                 <Button
                   variant="outline"
                   size="sm"

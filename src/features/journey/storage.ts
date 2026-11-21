@@ -1,6 +1,7 @@
 import { VisitRequest, JourneyStatus } from "./types";
 
 const STORAGE_KEY = "aarogyago_journey_requests_v1";
+export const JOURNEY_STORAGE_EVENT = "aarogyago_journey_update";
 
 const SEED_REQUESTS: VisitRequest[] = [
   {
@@ -8,7 +9,7 @@ const SEED_REQUESTS: VisitRequest[] = [
     createdAt: "2026-11-20T10:30:00.000Z",
     patientName: "Sample Traveler 01",
     contactEmail: "traveler01@example.com",
-    contactPhone: "Not a real number",
+    contactPhone: "+91 98220 12345",
     destinationCity: "Nagpur",
     selectedHospitalId: "hosp-ngp-01",
     selectedHospitalName: "AIIMS Nagpur Medical Complex",
@@ -45,7 +46,7 @@ const SEED_REQUESTS: VisitRequest[] = [
     createdAt: "2026-11-18T09:00:00.000Z",
     patientName: "Sample Traveler 02",
     contactEmail: "traveler02@example.com",
-    contactPhone: "Not a real number",
+    contactPhone: "+91 94330 67890",
     destinationCity: "New Delhi",
     selectedHospitalId: "hosp-del-01",
     selectedHospitalName: "Max Super Speciality Hospital, Saket (Illustrative)",
@@ -84,6 +85,12 @@ const SEED_REQUESTS: VisitRequest[] = [
   }
 ];
 
+function notifyStorageChange() {
+  if (typeof window !== "undefined") {
+    window.dispatchEvent(new CustomEvent(JOURNEY_STORAGE_EVENT));
+  }
+}
+
 export function getStoredRequests(): VisitRequest[] {
   if (typeof window === "undefined") {
     return SEED_REQUESTS;
@@ -107,6 +114,7 @@ export function getStoredRequests(): VisitRequest[] {
     const legacySamplePhones = new Set([
       "+91 90000 00001",
       "+91 90000 00002",
+      "Not a real number",
     ]);
 
     return parsed.map((request) => {
@@ -126,6 +134,7 @@ export function saveRequest(request: VisitRequest): void {
   const current = getStoredRequests();
   const updated = [request, ...current.filter((r) => r.id !== request.id)];
   localStorage.setItem(STORAGE_KEY, JSON.stringify(updated));
+  notifyStorageChange();
 }
 
 export function updateRequestStatus(
@@ -158,7 +167,15 @@ export function updateRequestStatus(
 
   current[index] = updatedRequest;
   localStorage.setItem(STORAGE_KEY, JSON.stringify(current));
+  notifyStorageChange();
   return updatedRequest;
+}
+
+export function resetDemoRequests(): VisitRequest[] {
+  if (typeof window === "undefined") return SEED_REQUESTS;
+  localStorage.setItem(STORAGE_KEY, JSON.stringify(SEED_REQUESTS));
+  notifyStorageChange();
+  return SEED_REQUESTS;
 }
 
 export function getRequestById(id: string): VisitRequest | undefined {

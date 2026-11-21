@@ -18,6 +18,7 @@ import {
   ArrowRight,
   Sparkles,
   ShieldAlert,
+  Zap,
 } from "lucide-react";
 import { SAMPLE_HOSPITALS, CITIES } from "@/features/hospitals/data";
 import { saveRequest } from "@/features/journey/storage";
@@ -32,6 +33,7 @@ function PlanVisitContent() {
   const searchParams = useSearchParams();
   const preselectedHospId = searchParams.get("hospital");
 
+  const [todayStr, setTodayStr] = useState("");
   const [step, setStep] = useState<1 | 2 | 3>(1);
   const [patientName, setPatientName] = useState("");
   const [contactEmail, setContactEmail] = useState("");
@@ -56,11 +58,15 @@ function PlanVisitContent() {
   const [errors, setErrors] = useState<Record<string, string>>({});
   const [submittedRequest, setSubmittedRequest] = useState<VisitRequest | null>(null);
 
-  // Set default date to 10 days from today
+  // Set default date to 10 days from today and define todayStr for min constraints
   useEffect(() => {
     const today = new Date();
-    today.setDate(today.getDate() + 10);
-    setPreferredDate(today.toISOString().split("T")[0]);
+    const formattedToday = today.toISOString().split("T")[0];
+    setTodayStr(formattedToday);
+
+    const targetDate = new Date();
+    targetDate.setDate(targetDate.getDate() + 10);
+    setPreferredDate(targetDate.toISOString().split("T")[0]);
   }, []);
 
   // Handle hospital query param
@@ -78,10 +84,35 @@ function PlanVisitContent() {
     setServices((prev) => ({ ...prev, [key]: !prev[key] }));
   };
 
+  const fillDemoScenario = () => {
+    setPatientName("Rajeshwar Sharma");
+    setContactPhone("+91 98223 45110");
+    setContactEmail("rajeshwar.sharma@example.com");
+    setTravelOriginCity("Raipur, Chhattisgarh");
+    setSelectedCity("Nagpur");
+    setSelectedHospitalId("hosp-ngp-01");
+    setLanguagePreference("Hindi / Marathi");
+    setSpecialNotes("Patient is 68 yrs old, traveling with companion. Needs step-free wheelchair access upon arrival and nearby Dharmashala lodging.");
+    setServices({
+      appointmentCoordination: true,
+      accommodationSupport: true,
+      localTransport: true,
+      languageInterpreter: false,
+      wheelchairSpecialAssistance: true,
+      dietaryOrCulturalPreferences: false,
+    });
+    setErrors({});
+  };
+
   const validateStep1 = () => {
     const errs: Record<string, string> = {};
     if (!patientName.trim()) errs.patientName = "Patient name is required.";
-    if (!contactPhone.trim()) errs.contactPhone = "Contact phone number is required.";
+    const digitsOnly = contactPhone.replace(/\D/g, "");
+    if (!contactPhone.trim()) {
+      errs.contactPhone = "Contact phone number is required.";
+    } else if (digitsOnly.length < 10) {
+      errs.contactPhone = "Please enter a valid phone number (at least 10 digits).";
+    }
     if (!travelOriginCity.trim()) errs.travelOriginCity = "Please enter your home/origin city.";
     setErrors(errs);
     return Object.keys(errs).length === 0;
@@ -89,7 +120,11 @@ function PlanVisitContent() {
 
   const validateStep2 = () => {
     const errs: Record<string, string> = {};
-    if (!preferredDate) errs.preferredDate = "Preferred visit date is required.";
+    if (!preferredDate) {
+      errs.preferredDate = "Preferred visit date is required.";
+    } else if (todayStr && preferredDate < todayStr) {
+      errs.preferredDate = "Visit date must be today or a future date.";
+    }
     setErrors(errs);
     return Object.keys(errs).length === 0;
   };
@@ -263,16 +298,28 @@ function PlanVisitContent() {
               exit={{ opacity: 0, x: -10 }}
               className="space-y-5"
             >
-              <h3 className="text-lg font-bold text-[#0F1C1A] dark:text-[#F2FAF8] flex items-center gap-2">
-                <User className="w-5 h-5 text-[#0D7A6E] dark:text-[#2DD4BF]" />
-                <span>Patient & Contact Details</span>
-              </h3>
+              <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 pb-2 border-b border-[#DBE9E6]/60 dark:border-[rgba(16,148,133,0.2)]">
+                <h3 className="text-lg font-bold text-[#0F1C1A] dark:text-[#F2FAF8] flex items-center gap-2">
+                  <User className="w-5 h-5 text-[#0D7A6E] dark:text-[#2DD4BF]" />
+                  <span>Patient & Contact Details</span>
+                </h3>
+
+                <button
+                  type="button"
+                  onClick={fillDemoScenario}
+                  className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-bold text-[#0D7A6E] dark:text-[#2DD4BF] bg-[#DAF0EC] dark:bg-[rgba(45,212,191,0.15)] hover:bg-[#BCE1D8] dark:hover:bg-[rgba(45,212,191,0.25)] border border-[#BCE1D8] dark:border-[rgba(45,212,191,0.3)] transition-all shadow-xs"
+                >
+                  <Zap className="w-3.5 h-3.5 text-[#E07A68]" />
+                  <span>Fill Demo Scenario (Raipur → AIIMS)</span>
+                </button>
+              </div>
 
               <div>
-                <label className="block text-xs font-bold text-[#0F1C1A] dark:text-[#F2FAF8] mb-1">
+                <label htmlFor="patientName" className="block text-xs font-bold text-[#0F1C1A] dark:text-[#F2FAF8] mb-1">
                   Full Name of Patient *
                 </label>
                 <input
+                  id="patientName"
                   type="text"
                   placeholder="e.g. Rameshwar Sharma"
                   value={patientName}
@@ -286,10 +333,11 @@ function PlanVisitContent() {
 
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                 <div>
-                  <label className="block text-xs font-bold text-[#0F1C1A] dark:text-[#F2FAF8] mb-1">
+                  <label htmlFor="contactPhone" className="block text-xs font-bold text-[#0F1C1A] dark:text-[#F2FAF8] mb-1">
                     Contact Phone Number *
                   </label>
                   <input
+                    id="contactPhone"
                     type="tel"
                     placeholder="e.g. +91 98223 45110"
                     value={contactPhone}
@@ -302,10 +350,11 @@ function PlanVisitContent() {
                 </div>
 
                 <div>
-                  <label className="block text-xs font-bold text-[#0F1C1A] dark:text-[#F2FAF8] mb-1">
+                  <label htmlFor="contactEmail" className="block text-xs font-bold text-[#0F1C1A] dark:text-[#F2FAF8] mb-1">
                     Email Address (Optional)
                   </label>
                   <input
+                    id="contactEmail"
                     type="email"
                     placeholder="e.g. patient@example.com"
                     value={contactEmail}
@@ -316,10 +365,11 @@ function PlanVisitContent() {
               </div>
 
               <div>
-                <label className="block text-xs font-bold text-[#0F1C1A] dark:text-[#F2FAF8] mb-1">
+                <label htmlFor="travelOriginCity" className="block text-xs font-bold text-[#0F1C1A] dark:text-[#F2FAF8] mb-1">
                   Traveling From (Origin City / Town) *
                 </label>
                 <input
+                  id="travelOriginCity"
                   type="text"
                   placeholder="e.g. Raipur, Chhattisgarh or Amravati, Maharashtra"
                   value={travelOriginCity}
@@ -354,10 +404,11 @@ function PlanVisitContent() {
 
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                 <div>
-                  <label className="block text-xs font-bold text-[#0F1C1A] dark:text-[#F2FAF8] mb-1">
+                  <label htmlFor="destinationCity" className="block text-xs font-bold text-[#0F1C1A] dark:text-[#F2FAF8] mb-1">
                     Destination City
                   </label>
                   <select
+                    id="destinationCity"
                     value={selectedCity}
                     onChange={(e) => {
                       const city = e.target.value;
@@ -376,10 +427,11 @@ function PlanVisitContent() {
                 </div>
 
                 <div>
-                  <label className="block text-xs font-bold text-[#0F1C1A] dark:text-[#F2FAF8] mb-1">
+                  <label htmlFor="selectedHospital" className="block text-xs font-bold text-[#0F1C1A] dark:text-[#F2FAF8] mb-1">
                     Selected Hospital Center *
                   </label>
                   <select
+                    id="selectedHospital"
                     value={selectedHospitalId}
                     onChange={(e) => setSelectedHospitalId(e.target.value)}
                     className="w-full px-4 py-2.5 rounded-xl text-sm bg-white dark:bg-[#0D1C1E] border border-[#DBE9E6] dark:border-[rgba(16,148,133,0.3)] text-[#0F1C1A] dark:text-[#F2FAF8]"
@@ -397,11 +449,13 @@ function PlanVisitContent() {
 
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                 <div>
-                  <label className="block text-xs font-bold text-[#0F1C1A] dark:text-[#F2FAF8] mb-1">
+                  <label htmlFor="preferredDate" className="block text-xs font-bold text-[#0F1C1A] dark:text-[#F2FAF8] mb-1">
                     Preferred Visit Date *
                   </label>
                   <input
+                    id="preferredDate"
                     type="date"
+                    min={todayStr}
                     value={preferredDate}
                     onChange={(e) => setPreferredDate(e.target.value)}
                     className="w-full px-4 py-2.5 rounded-xl text-sm bg-white dark:bg-[#0D1C1E] border border-[#DBE9E6] dark:border-[rgba(16,148,133,0.3)] text-[#0F1C1A] dark:text-[#F2FAF8]"
@@ -412,11 +466,13 @@ function PlanVisitContent() {
                 </div>
 
                 <div>
-                  <label className="block text-xs font-bold text-[#0F1C1A] dark:text-[#F2FAF8] mb-1">
+                  <label htmlFor="alternateDate" className="block text-xs font-bold text-[#0F1C1A] dark:text-[#F2FAF8] mb-1">
                     Alternate / Buffer Date (Optional)
                   </label>
                   <input
+                    id="alternateDate"
                     type="date"
+                    min={preferredDate || todayStr}
                     value={alternateDate}
                     onChange={(e) => setAlternateDate(e.target.value)}
                     className="w-full px-4 py-2.5 rounded-xl text-sm bg-white dark:bg-[#0D1C1E] border border-[#DBE9E6] dark:border-[rgba(16,148,133,0.3)] text-[#0F1C1A] dark:text-[#F2FAF8]"
@@ -502,6 +558,7 @@ function PlanVisitContent() {
                         type="checkbox"
                         checked={isChecked}
                         onChange={() => {}}
+                        aria-label={item.title}
                         className="mt-1 w-4 h-4 text-[#0D7A6E] rounded accent-[#0D7A6E]"
                       />
                       <div>
@@ -521,10 +578,11 @@ function PlanVisitContent() {
               </div>
 
               <div>
-                <label className="block text-xs font-bold text-[#0F1C1A] dark:text-[#F2FAF8] mb-1">
+                <label htmlFor="languagePreference" className="block text-xs font-bold text-[#0F1C1A] dark:text-[#F2FAF8] mb-1">
                   Language Preference for Coordinator
                 </label>
                 <input
+                  id="languagePreference"
                   type="text"
                   placeholder="e.g. Hindi, Marathi, Bengali, English"
                   value={languagePreference}
@@ -534,10 +592,11 @@ function PlanVisitContent() {
               </div>
 
               <div>
-                <label className="block text-xs font-bold text-[#0F1C1A] dark:text-[#F2FAF8] mb-1">
+                <label htmlFor="specialNotes" className="block text-xs font-bold text-[#0F1C1A] dark:text-[#F2FAF8] mb-1">
                   Additional Non-Clinical Notes (Optional)
                 </label>
                 <textarea
+                  id="specialNotes"
                   rows={2}
                   placeholder="e.g. Elderly patient, needs elevator access, arriving on early morning train."
                   value={specialNotes}

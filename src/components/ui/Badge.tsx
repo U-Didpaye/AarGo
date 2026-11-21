@@ -55,7 +55,7 @@ export function Badge({
     outline:
       "border border-[#DBE9E6] dark:border-[rgba(16,148,133,0.3)] text-[#4E6B63] dark:text-[#8FA8A1]",
     illustrative:
-      "bg-[#FBE4DE] text-[#C0392B] dark:bg-[rgba(224,122,104,0.18)] dark:text-[#F8A393] border border-[#F8C8BD] dark:border-[rgba(224,122,104,0.3)]",
+      "bg-[#FBE4DE] text-[#9C3826] dark:bg-[rgba(224,122,104,0.18)] dark:text-[#F8A393] border border-[#F8C8BD] dark:border-[rgba(224,122,104,0.3)]",
     ai:
       "bg-gradient-to-r from-[#0D7A6E]/10 to-[#E07A68]/15 text-[#0D7A6E] dark:text-[#2DD4BF] border border-[#109485]/30",
   };

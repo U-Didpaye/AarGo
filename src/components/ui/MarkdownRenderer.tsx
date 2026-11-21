@@ -263,10 +263,21 @@ function ChecklistItem({
 }) {
   const [checked, setChecked] = useState(defaultChecked);
 
+  const toggle = () => setChecked(!checked);
+
   return (
     <div
-      onClick={() => setChecked(!checked)}
-      className={`group flex items-start gap-2.5 p-2 rounded-xl border cursor-pointer select-none transition-all w-full ${
+      role="checkbox"
+      aria-checked={checked}
+      tabIndex={0}
+      onClick={toggle}
+      onKeyDown={(e) => {
+        if (e.key === "Enter" || e.key === " ") {
+          e.preventDefault();
+          toggle();
+        }
+      }}
+      className={`group flex items-start gap-2.5 p-2 rounded-xl border cursor-pointer select-none transition-all w-full focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#0D7A6E] dark:focus-visible:ring-[#2DD4BF] ${
         checked
           ? "bg-[#DAF0EC]/70 dark:bg-[rgba(45,212,191,0.15)] border-[#BCE1D8] dark:border-[rgba(45,212,191,0.3)] text-[#0D7A6E] dark:text-[#2DD4BF]"
           : "bg-white/70 dark:bg-[#0D1C1E]/60 border-[#DBE9E6] dark:border-[rgba(16,148,133,0.2)] hover:border-[#0D7A6E]/40"

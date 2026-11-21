@@ -19,17 +19,15 @@ export function ThemeProvider({ children }: { children: React.ReactNode }) {
   const [mounted, setMounted] = useState(false);
 
   useEffect(() => {
+    // AarogyaGo requirement: Default must be Light Mode on initial navigation
     const saved = localStorage.getItem("aarogyago_theme") as Theme | null;
-    if (saved) {
-      setTheme(saved);
-      if (saved === "dark") {
-        document.documentElement.classList.add("dark");
-      } else {
-        document.documentElement.classList.remove("dark");
-      }
-    } else if (window.matchMedia("(prefers-color-scheme: dark)").matches) {
+    if (saved === "dark") {
       setTheme("dark");
       document.documentElement.classList.add("dark");
+    } else {
+      // Default explicitly to light theme
+      setTheme("light");
+      document.documentElement.classList.remove("dark");
     }
     setMounted(true);
   }, []);

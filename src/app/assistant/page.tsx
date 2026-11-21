@@ -22,6 +22,7 @@ import {
   HelpCircle,
   RotateCcw,
 } from "lucide-react";
+import { getStoredRequests } from "@/features/journey/storage";
 import { Button } from "@/components/ui/Button";
 import { GlassCard } from "@/components/ui/GlassCard";
 import { Badge } from "@/components/ui/Badge";
@@ -85,12 +86,34 @@ function AssistantContent() {
   const cityParam = searchParams.get("city");
   const dateParam = searchParams.get("date");
 
+  const [activeHospital, setActiveHospital] = useState(hospParam || "");
+  const [activeCity, setActiveCity] = useState(cityParam || "");
+  const [activeDate, setActiveDate] = useState(dateParam || "");
+
   const [inputPrompt, setInputPrompt] = useState("");
   const [isLoading, setIsLoading] = useState(false);
   const [copiedId, setCopiedId] = useState<string | null>(null);
   const [lastFailedQuery, setLastFailedQuery] = useState<string | null>(null);
-  const chatEndRef = useRef<HTMLDivElement | null>(null);
+
+  const chatContainerRef = useRef<HTMLDivElement | null>(null);
   const textareaRef = useRef<HTMLTextAreaElement | null>(null);
+
+  useEffect(() => {
+    if (hospParam) setActiveHospital(hospParam);
+    if (cityParam) setActiveCity(cityParam);
+    if (dateParam) setActiveDate(dateParam);
+
+    // Auto-detect user's existing planned journey if no query params were passed in URL
+    if (!hospParam && !cityParam && !dateParam) {
+      const stored = getStoredRequests();
+      if (stored.length > 0) {
+        const top = stored[0];
+        setActiveHospital(top.selectedHospitalName);
+        setActiveCity(top.destinationCity);
+        setActiveDate(top.preferredDate);
+      }
+    }
+  }, [hospParam, cityParam, dateParam]);
 
   const initialAssistantMessage: ChatMessage = {
     id: "welcome-msg",
@@ -103,15 +126,19 @@ function AssistantContent() {
   const [messages, setMessages] = useState<ChatMessage[]>([initialAssistantMessage]);
 
   const scrollToBottom = () => {
-    chatEndRef.current?.scrollIntoView({ behavior: "smooth" });
+    if (chatContainerRef.current) {
+      chatContainerRef.current.scrollTo({
+        top: chatContainerRef.current.scrollHeight,
+        behavior: "smooth",
+      });
+    }
   };
 
   useEffect(() => {
     scrollToBottom();
   }, [messages, isLoading]);
 
-  // Has journey context fields
-  const hasJourneyContext = Boolean(hospParam || cityParam || dateParam);
+  const hasJourneyContext = Boolean(activeHospital || activeCity || activeDate);
 
   const handleSendMessage = async (textToSend?: string) => {
     const query = (textToSend || inputPrompt).trim();
@@ -131,7 +158,6 @@ function AssistantContent() {
     setInputPrompt("");
     setIsLoading(true);
 
-    // Build chat history for Gemini multi-turn context (exclude welcome message and errors)
     const historyPayload = updatedMessages
       .filter((m) => m.id !== "welcome-msg" && !m.isError)
       .map((m) => ({
@@ -146,9 +172,9 @@ function AssistantContent() {
         body: JSON.stringify({
           prompt: query,
           context: {
-            destinationCity: cityParam || undefined,
-            hospitalName: hospParam || undefined,
-            visitDate: dateParam || undefined,
+            destinationCity: activeCity || undefined,
+            hospitalName: activeHospital || undefined,
+            visitDate: activeDate || undefined,
           },
           history: historyPayload,
         }),
@@ -254,8 +280,9 @@ function AssistantContent() {
 
       {/* Chat Area */}
       <GlassCard className="p-4 sm:p-6 mb-6 min-h-[500px] flex flex-col justify-between border-[#DBE9E6] dark:border-[rgba(16,148,133,0.3)] card-shine">
-        {/* Message Thread */}
+        {/* Scoped Message Thread */}
         <div
+          ref={chatContainerRef}
           role="log"
           aria-label="Assistant conversation"
           aria-live="polite"
@@ -317,27 +344,27 @@ function AssistantContent() {
                           </span>
                         </div>
                         <ul className="space-y-1 text-[#0F1C1A] dark:text-[#E2F0EC] text-xs">
-                          {hospParam && (
+                          {activeHospital && (
                             <li className="flex items-center gap-2">
                               <span className="font-semibold text-[#0D7A6E] dark:text-[#2DD4BF]">• Hospital:</span>
-                              <span>{hospParam}</span>
+                              <span>{activeHospital}</span>
                             </li>
                           )}
-                          {cityParam && (
+                          {activeCity && (
                             <li className="flex items-center gap-2">
                               <span className="font-semibold text-[#0D7A6E] dark:text-[#2DD4BF]">• Destination:</span>
                               <span className="flex items-center gap-1">
                                 <MapPin className="w-3 h-3 text-[#0D7A6E] dark:text-[#2DD4BF]" />
-                                {cityParam}
+                                {activeCity}
                               </span>
                             </li>
                           )}
-                          {dateParam && (
+                          {activeDate && (
                             <li className="flex items-center gap-2">
                               <span className="font-semibold text-[#0D7A6E] dark:text-[#2DD4BF]">• Visit date:</span>
                               <span className="flex items-center gap-1">
                                 <Calendar className="w-3 h-3 text-[#0D7A6E] dark:text-[#2DD4BF]" />
-                                {dateParam}
+                                {activeDate}
                               </span>
                             </li>
                           )}
@@ -417,8 +444,6 @@ function AssistantContent() {
               <span className="text-xs sm:text-sm">Gemini is preparing your personalized journey guidance...</span>
             </div>
           )}
-
-          <div ref={chatEndRef} />
         </div>
 
         {/* Interactive Suggested Prompt Cards */}

@@ -28,8 +28,8 @@ export function GlassCard({
       }
       className={cn(
         "rounded-2xl p-6 glass-card relative overflow-hidden",
-        "bg-white/75 dark:bg-[#151821]/80",
-        "border border-slate-200/80 dark:border-slate-800/80",
+        "bg-white/75 dark:bg-[#0D1C1E]/80",
+        "border border-slate-200/80 dark:border-[rgba(16,148,133,0.25)]",
         "shadow-sm dark:shadow-glass-dark",
         className
       )}

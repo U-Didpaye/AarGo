@@ -13,6 +13,7 @@ import {
   Check,
   X,
   CalendarPlus,
+  Copy,
 } from "lucide-react";
 import { SAMPLE_HOSPITALS, CITIES, SPECIALTIES } from "@/features/hospitals/data";
 import { Hospital } from "@/features/journey/types";
@@ -26,28 +27,45 @@ export default function DiscoverPage() {
   const [selectedCity, setSelectedCity] = useState("All Cities");
   const [selectedSpecialty, setSelectedSpecialty] = useState("All Specialties");
   const [selectedHospital, setSelectedHospital] = useState<Hospital | null>(null);
+  const [copiedLogistics, setCopiedLogistics] = useState(false);
 
   const filteredHospitals = useMemo(() => {
     return SAMPLE_HOSPITALS.filter((hosp) => {
+      const q = searchQuery.toLowerCase().trim();
       const matchesSearch =
-        hosp.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
-        hosp.city.toLowerCase().includes(searchQuery.toLowerCase()) ||
-        hosp.specialties.some((s) =>
-          s.toLowerCase().includes(searchQuery.toLowerCase())
-        );
+        !q ||
+        hosp.name.toLowerCase().includes(q) ||
+        hosp.city.toLowerCase().includes(q) ||
+        hosp.specialties.some((s) => s.toLowerCase().includes(q)) ||
+        hosp.languagesSupported.some((l) => l.toLowerCase().includes(q));
 
       const matchesCity =
         selectedCity === "All Cities" || hosp.city.toLowerCase() === selectedCity.toLowerCase();
 
-      const matchesSpecialty =
-        selectedSpecialty === "All Specialties" ||
-        hosp.specialties.some(
-          (s) => s.toLowerCase() === selectedSpecialty.toLowerCase()
-        );
+      // Flexible specialty matching
+      let matchesSpecialty = true;
+      if (selectedSpecialty !== "All Specialties") {
+        const target = selectedSpecialty.toLowerCase();
+        matchesSpecialty = hosp.specialties.some((spec) => {
+          const s = spec.toLowerCase();
+          if (s.includes(target) || target.includes(s)) return true;
+          if (target.includes("cardio") && (s.includes("cardiac") || s.includes("cardio"))) return true;
+          if (target.includes("ortho") && (s.includes("joint") || s.includes("bone") || s.includes("spine"))) return true;
+          if (target.includes("transplant") && s.includes("transplant")) return true;
+          return false;
+        });
+      }
 
       return matchesSearch && matchesCity && matchesSpecialty;
     });
   }, [searchQuery, selectedCity, selectedSpecialty]);
+
+  const handleCopyHospitalLogistics = (hosp: Hospital) => {
+    const text = `${hosp.name} (${hosp.city}, ${hosp.state})\nAddress: ${hosp.address}\nTransit & Distance: ${hosp.nearbyTransit}\nAttendant Lodging: ${hosp.guestAccommodationNearby}\nLanguages Supported: ${hosp.languagesSupported.join(", ")}\nAccreditation: ${hosp.accreditation}`;
+    navigator.clipboard.writeText(text);
+    setCopiedLogistics(true);
+    setTimeout(() => setCopiedLogistics(false), 2200);
+  };
 
   return (
     <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-10">
@@ -77,13 +95,16 @@ export default function DiscoverPage() {
             <Search className="w-4 h-4 absolute left-3.5 top-1/2 -translate-y-1/2 text-[#4E6B63] dark:text-[#8FA8A1]" />
             <input
               type="text"
+              aria-label="Search hospitals by name, city, or specialty"
               placeholder="Search by hospital name, city, or specialty..."
               value={searchQuery}
               onChange={(e) => setSearchQuery(e.target.value)}
-              className="w-full pl-10 pr-4 py-2.5 rounded-xl text-sm bg-white dark:bg-[#0D1C1E] border border-[#DBE9E6] dark:border-[rgba(16,148,133,0.3)] focus:outline-none focus:ring-2 focus:ring-[#0D7A6E]/40 dark:focus:ring-[#2DD4BF]/40 text-[#0F1C1A] dark:text-[#F2FAF8] placeholder:text-[#4E6B63]/60 dark:placeholder:text-[#8FA8A1]/60"
+              className="w-full pl-10 pr-10 py-2.5 rounded-xl text-sm bg-white dark:bg-[#0D1C1E] border border-[#DBE9E6] dark:border-[rgba(16,148,133,0.3)] focus:outline-none focus:ring-2 focus:ring-[#0D7A6E]/40 dark:focus:ring-[#2DD4BF]/40 text-[#0F1C1A] dark:text-[#F2FAF8] placeholder:text-[#4E6B63]/60 dark:placeholder:text-[#8FA8A1]/60"
             />
             {searchQuery && (
               <button
+                type="button"
+                aria-label="Clear search query"
                 onClick={() => setSearchQuery("")}
                 className="absolute right-3.5 top-1/2 -translate-y-1/2 text-slate-400 hover:text-slate-600"
               >
@@ -94,7 +115,11 @@ export default function DiscoverPage() {
 
           {/* City Selector */}
           <div className="w-full md:w-56">
+            <label htmlFor="citySelector" className="sr-only">
+              Filter by City
+            </label>
             <select
+              id="citySelector"
               value={selectedCity}
               onChange={(e) => setSelectedCity(e.target.value)}
               className="w-full px-3.5 py-2.5 rounded-xl text-sm bg-white dark:bg-[#0D1C1E] border border-[#DBE9E6] dark:border-[rgba(16,148,133,0.3)] focus:outline-none focus:ring-2 focus:ring-[#0D7A6E]/40 text-[#0F1C1A] dark:text-[#F2FAF8]"
@@ -109,7 +134,11 @@ export default function DiscoverPage() {
 
           {/* Specialty Selector */}
           <div className="w-full md:w-60">
+            <label htmlFor="specialtySelector" className="sr-only">
+              Filter by Specialty
+            </label>
             <select
+              id="specialtySelector"
               value={selectedSpecialty}
               onChange={(e) => setSelectedSpecialty(e.target.value)}
               className="w-full px-3.5 py-2.5 rounded-xl text-sm bg-white dark:bg-[#0D1C1E] border border-[#DBE9E6] dark:border-[rgba(16,148,133,0.3)] focus:outline-none focus:ring-2 focus:ring-[#0D7A6E]/40 text-[#0F1C1A] dark:text-[#F2FAF8]"
@@ -132,6 +161,7 @@ export default function DiscoverPage() {
             selectedSpecialty !== "All Specialties" ||
             searchQuery) && (
             <button
+              type="button"
               onClick={() => {
                 setSelectedCity("All Cities");
                 setSelectedSpecialty("All Specialties");
@@ -237,7 +267,7 @@ export default function DiscoverPage() {
             No medical centers match your search
           </h3>
           <p className="text-xs text-[#4E6B63] dark:text-[#8FA8A1] mt-1">
-            Try adjusting your city filter or search query.
+            Try adjusting your city filter, specialty, or search keyword.
           </p>
           <Button
             variant="outline"
@@ -266,8 +296,10 @@ export default function DiscoverPage() {
             >
               {/* Close Button */}
               <button
+                type="button"
+                aria-label="Close hospital details modal"
                 onClick={() => setSelectedHospital(null)}
-                className="absolute top-5 right-5 p-2 rounded-xl text-slate-400 hover:text-slate-600 dark:hover:text-slate-200 hover:bg-[#DAF0EC]/50 dark:hover:bg-[#13282B]"
+                className="absolute top-5 right-5 p-2 rounded-xl text-slate-400 hover:text-slate-600 dark:hover:text-slate-200 hover:bg-[#DAF0EC]/50 dark:hover:bg-[#13282B] transition-colors"
               >
                 <X className="w-5 h-5" />
               </button>
@@ -365,15 +397,35 @@ export default function DiscoverPage() {
                 </div>
 
                 {/* Bottom Modal CTA */}
-                <div className="pt-4 border-t border-[#DBE9E6] dark:border-[rgba(16,148,133,0.25)] flex items-center justify-end gap-3">
-                  <Button variant="outline" size="md" onClick={() => setSelectedHospital(null)}>
-                    Close
-                  </Button>
-                  <Link href={`/plan?hospital=${selectedHospital.id}`}>
-                    <Button size="md" variant="primary" icon={<CalendarPlus className="w-4 h-4" />}>
-                      Coordinate Visit to this Hospital
+                <div className="pt-4 border-t border-[#DBE9E6] dark:border-[rgba(16,148,133,0.25)] flex flex-wrap items-center justify-between gap-3">
+                  <button
+                    type="button"
+                    onClick={() => handleCopyHospitalLogistics(selectedHospital)}
+                    className="inline-flex items-center gap-1.5 text-xs font-semibold text-[#0D7A6E] dark:text-[#2DD4BF] hover:underline"
+                  >
+                    {copiedLogistics ? (
+                      <>
+                        <Check className="w-3.5 h-3.5 text-emerald-600" />
+                        <span className="text-emerald-600">Logistics Copied!</span>
+                      </>
+                    ) : (
+                      <>
+                        <Copy className="w-3.5 h-3.5" />
+                        <span>Copy Transit & Stay Details</span>
+                      </>
+                    )}
+                  </button>
+
+                  <div className="flex items-center gap-3">
+                    <Button variant="outline" size="md" onClick={() => setSelectedHospital(null)}>
+                      Close
                     </Button>
-                  </Link>
+                    <Link href={`/plan?hospital=${selectedHospital.id}`}>
+                      <Button size="md" variant="primary" icon={<CalendarPlus className="w-4 h-4" />}>
+                        Coordinate Visit
+                      </Button>
+                    </Link>
+                  </div>
                 </div>
               </div>
             </motion.div>

@@ -27,7 +27,7 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en" suppressHydrationWarning>
-      <body className="min-h-screen flex flex-col antialiased selection:bg-[#3D43C8]/20 selection:text-[#3D43C8] dark:selection:bg-[#A5AAFF]/30 dark:selection:text-[#A5AAFF]">
+      <body className="min-h-screen flex flex-col antialiased selection:bg-[#0D7A6E]/20 selection:text-[#0D7A6E] dark:selection:bg-[#2DD4BF]/30 dark:selection:text-[#2DD4BF]">
         <ThemeProvider>
           <AmbientBackground />
           <Navbar />

@@ -9,10 +9,14 @@ import {
   Save,
   RefreshCw,
   Eye,
+  RotateCcw,
+  Sparkles,
 } from "lucide-react";
 import {
   getStoredRequests,
   updateRequestStatus,
+  resetDemoRequests,
+  JOURNEY_STORAGE_EVENT,
 } from "@/features/journey/storage";
 import { VisitRequest, JourneyStatus } from "@/features/journey/types";
 import { formatDate } from "@/lib/utils";
@@ -39,10 +43,6 @@ export default function CoordinatorPage() {
   const [coordNotes, setCoordNotes] = useState("");
   const [saveSuccess, setSaveSuccess] = useState(false);
 
-  useEffect(() => {
-    loadRequests();
-  }, []);
-
   const loadRequests = () => {
     const list = getStoredRequests();
     setRequests(list);
@@ -50,6 +50,28 @@ export default function CoordinatorPage() {
       selectRequest(list[0]);
     }
   };
+
+  useEffect(() => {
+    loadRequests();
+
+    const handleStorageSync = () => {
+      const list = getStoredRequests();
+      setRequests(list);
+      setSelectedReq((current) => {
+        if (!current) return list[0] || null;
+        return list.find((r) => r.id === current.id) || list[0] || null;
+      });
+    };
+
+    window.addEventListener("storage", handleStorageSync);
+    window.addEventListener(JOURNEY_STORAGE_EVENT, handleStorageSync);
+
+    return () => {
+      window.removeEventListener("storage", handleStorageSync);
+      window.removeEventListener(JOURNEY_STORAGE_EVENT, handleStorageSync);
+    };
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
 
   const selectRequest = (req: VisitRequest) => {
     setSelectedReq(req);
@@ -80,6 +102,14 @@ export default function CoordinatorPage() {
     }
   };
 
+  const handleResetDemoData = () => {
+    if (window.confirm("Reset all coordinator enquiries to original demo sample records?")) {
+      const reset = resetDemoRequests();
+      setRequests(reset);
+      if (reset.length > 0) selectRequest(reset[0]);
+    }
+  };
+
   const filteredRequests = requests.filter((r) => {
     const matchesFilter = filterStatus === "All" || r.status === filterStatus;
     const matchesSearch =
@@ -92,7 +122,7 @@ export default function CoordinatorPage() {
   return (
     <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-10">
       {/* Header */}
-      <div className="mb-8">
+      <div className="mb-8 flex flex-col sm:flex-row sm:items-center justify-between gap-4">
         <FadeIn>
           <div className="flex items-center gap-2 mb-2">
             <span className="text-xs font-bold uppercase tracking-wider text-[#0D7A6E] dark:text-[#2DD4BF]">
@@ -104,12 +134,21 @@ export default function CoordinatorPage() {
             Demonstration Coordinator Desk
           </h1>
           <p className="text-sm text-[#4E6B63] dark:text-[#8FA8A1] mt-1">
-            Simulate non-clinical coordination using sample requests. Changes are saved only in this browser and are not sent to patients or shared with other users.
+            Simulate non-clinical coordination using sample requests. Changes are saved locally and synced real-time to the patient portal.
           </p>
         </FadeIn>
+
+        <button
+          type="button"
+          onClick={handleResetDemoData}
+          className="inline-flex items-center gap-1.5 self-start sm:self-center px-3.5 py-2 rounded-xl text-xs font-semibold text-[#4E6B63] dark:text-[#8FA8A1] hover:text-[#0D7A6E] dark:hover:text-[#2DD4BF] bg-white dark:bg-[#0D1C1E] border border-[#DBE9E6] dark:border-[rgba(16,148,133,0.3)] shadow-xs transition-colors"
+        >
+          <RotateCcw className="w-3.5 h-3.5" />
+          <span>Reset Demo Data</span>
+        </button>
       </div>
 
-      {/* HealthOrbit-style Bento Metrics Row */}
+      {/* Balanced 4-Metric Bento Row */}
       <div className="grid grid-cols-2 sm:grid-cols-4 gap-4 mb-8">
         <GlassCard className="p-4 border-[#DBE9E6] dark:border-[rgba(16,148,133,0.3)]">
           <span className="text-xs font-bold text-[#4E6B63] dark:text-[#8FA8A1] block">
@@ -117,6 +156,14 @@ export default function CoordinatorPage() {
           </span>
           <span className="text-2xl font-bold font-mono text-[#0F1C1A] dark:text-[#F2FAF8] mt-1 block">
             {requests.length}
+          </span>
+        </GlassCard>
+        <GlassCard className="p-4 border-[#DBE9E6] dark:border-[rgba(16,148,133,0.3)]">
+          <span className="text-xs font-bold text-[#0D7A6E] dark:text-[#2DD4BF] block">
+            New / Submitted
+          </span>
+          <span className="text-2xl font-bold font-mono text-[#0D7A6E] dark:text-[#2DD4BF] mt-1 block">
+            {requests.filter((r) => r.status === "Request Submitted").length}
           </span>
         </GlassCard>
         <GlassCard className="p-4 border-[#DBE9E6] dark:border-[rgba(16,148,133,0.3)]">
@@ -128,19 +175,11 @@ export default function CoordinatorPage() {
           </span>
         </GlassCard>
         <GlassCard className="p-4 border-[#DBE9E6] dark:border-[rgba(16,148,133,0.3)]">
-          <span className="text-xs font-bold text-[#0D7A6E] dark:text-[#2DD4BF] block">
-            Hospital Contacted
-          </span>
-          <span className="text-2xl font-bold font-mono text-[#0D7A6E] dark:text-[#2DD4BF] mt-1 block">
-            {requests.filter((r) => r.status === "Hospital Contacted").length}
-          </span>
-        </GlassCard>
-        <GlassCard className="p-4 border-[#DBE9E6] dark:border-[rgba(16,148,133,0.3)]">
           <span className="text-xs font-bold text-emerald-700 dark:text-emerald-400 block">
-            Appointment Updates
+            Facilitated / Scheduled
           </span>
           <span className="text-2xl font-bold font-mono text-emerald-700 dark:text-emerald-400 mt-1 block">
-            {requests.filter((r) => r.status === "Appointment Update").length}
+            {requests.filter((r) => r.status === "Hospital Contacted" || r.status === "Appointment Update").length}
           </span>
         </GlassCard>
       </div>
@@ -163,6 +202,7 @@ export default function CoordinatorPage() {
               />
             </div>
             <select
+              aria-label="Filter enquiries by status"
               value={filterStatus}
               onChange={(e) => setFilterStatus(e.target.value)}
               className="px-3 py-2 rounded-xl text-xs bg-white dark:bg-[#0D1C1E] border border-[#DBE9E6] dark:border-[rgba(16,148,133,0.3)] text-[#0F1C1A] dark:text-[#F2FAF8]"
@@ -239,14 +279,27 @@ export default function CoordinatorPage() {
                   </p>
                 </div>
 
-                <Link
-                  href={`/journey?id=${selectedReq.id}`}
-                  target="_blank"
-                  className="text-xs text-[#0D7A6E] dark:text-[#2DD4BF] hover:underline flex items-center gap-1 font-semibold"
-                >
-                  <Eye className="w-3.5 h-3.5" />
-                  <span>View Patient Portal</span>
-                </Link>
+                <div className="flex items-center gap-3">
+                  <Link
+                    href={`/assistant?hospital=${encodeURIComponent(
+                      selectedReq.selectedHospitalName
+                    )}&city=${encodeURIComponent(
+                      selectedReq.destinationCity
+                    )}&date=${encodeURIComponent(selectedReq.preferredDate)}`}
+                    className="text-xs text-[#E07A68] hover:underline flex items-center gap-1 font-semibold"
+                  >
+                    <Sparkles className="w-3.5 h-3.5" />
+                    <span>AI Plan</span>
+                  </Link>
+
+                  <Link
+                    href={`/journey?id=${selectedReq.id}`}
+                    className="text-xs text-[#0D7A6E] dark:text-[#2DD4BF] hover:underline flex items-center gap-1 font-semibold"
+                  >
+                    <Eye className="w-3.5 h-3.5" />
+                    <span>Patient View</span>
+                  </Link>
+                </div>
               </div>
 
               {/* Hospital & Services Grid */}
@@ -295,7 +348,7 @@ export default function CoordinatorPage() {
                 </div>
               </div>
 
-              {/* Status Update Form */}
+              {/* Status Update Form with Accessibility */}
               <form onSubmit={handleUpdate} className="space-y-4 pt-4 border-t border-[#DBE9E6]/70 dark:border-[rgba(16,148,133,0.2)]">
                 <h4 className="text-sm font-bold text-[#0F1C1A] dark:text-[#F2FAF8] flex items-center gap-2">
                   <RefreshCw className="w-4 h-4 text-[#0D7A6E] dark:text-[#2DD4BF]" />
@@ -304,10 +357,11 @@ export default function CoordinatorPage() {
 
                 <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                   <div>
-                    <label className="block text-xs font-bold text-[#0F1C1A] dark:text-[#F2FAF8] mb-1">
+                    <label htmlFor="advanceStatus" className="block text-xs font-bold text-[#0F1C1A] dark:text-[#F2FAF8] mb-1">
                       Advance Journey Stage
                     </label>
                     <select
+                      id="advanceStatus"
                       value={newStatus}
                       onChange={(e) => setNewStatus(e.target.value as JourneyStatus)}
                       className="w-full px-3.5 py-2.5 rounded-xl text-xs bg-white dark:bg-[#0D1C1E] border border-[#DBE9E6] dark:border-[rgba(16,148,133,0.3)] text-[#0F1C1A] dark:text-[#F2FAF8]"
@@ -321,10 +375,11 @@ export default function CoordinatorPage() {
                   </div>
 
                   <div>
-                    <label className="block text-xs font-bold text-[#0F1C1A] dark:text-[#F2FAF8] mb-1">
+                    <label htmlFor="statusNote" className="block text-xs font-bold text-[#0F1C1A] dark:text-[#F2FAF8] mb-1">
                       Timeline Audit Note
                     </label>
                     <input
+                      id="statusNote"
                       type="text"
                       placeholder="e.g. Outstation registration desk confirmed."
                       value={statusNote}
@@ -335,10 +390,11 @@ export default function CoordinatorPage() {
                 </div>
 
                 <div>
-                  <label className="block text-xs font-bold text-[#0F1C1A] dark:text-[#F2FAF8] mb-1">
+                  <label htmlFor="coordNotes" className="block text-xs font-bold text-[#0F1C1A] dark:text-[#F2FAF8] mb-1">
                     Coordinator Dispatch Notes (Visible to Patient)
                   </label>
                   <textarea
+                    id="coordNotes"
                     rows={3}
                     placeholder="Enter lodging details, emergency entrance landmarks, or facilitator phone numbers..."
                     value={coordNotes}
