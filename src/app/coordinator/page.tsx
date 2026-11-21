@@ -113,7 +113,7 @@ export default function CoordinatorPage() {
             Demonstration Coordinator Desk
           </h1>
           <p className="text-sm text-slate-600 dark:text-slate-400 mt-1">
-            Simulate the non-clinical facilitation team: review outstation inquiries, advance coordination milestones, and dispatch notes to patients.
+            Simulate non-clinical facilitation operations: review outstation inquiries, advance coordination milestones, and dispatch notes to patients.
           </p>
         </FadeIn>
       </div>

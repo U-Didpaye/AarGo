@@ -132,13 +132,12 @@ While doctors and hospitals provide clinical care, patients and outstation famil
 
 ---
 
-## 06. Team & Event Credits
+## 06. Event & Project Attribution
 
 * **Event**: Hack Days at NFSU Nagpur
 * **Organised Under**: Major League Hacking (MLH) Hack Days Programme
-* **Team**: HackMaster_Restart
-* **Team Leader**: Ujwal Didpaye
-* **Institution**: G. H. Raisoni College of Engineering, Nagpur
+* **Author**: Ujwal Didpaye
+* **Credit**: Made with creativity by Ujwal Didpaye
 * **Repository**: [https://github.com/U-Didpaye/AarGo.git](https://github.com/U-Didpaye/AarGo.git)
 
 ---

@@ -228,7 +228,7 @@ function PlanVisitContent() {
             Coordinate Your Medical Visit
           </h1>
           <p className="text-sm text-slate-600 dark:text-slate-400 mt-1">
-            Specify your destination, dates, and non-clinical support needs so our team can facilitate your journey seamlessly.
+            Specify your destination, dates, and non-clinical support needs so your journey can be facilitated seamlessly.
           </p>
         </FadeIn>
       </div>

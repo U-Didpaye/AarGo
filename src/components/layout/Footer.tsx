@@ -2,7 +2,7 @@
 
 import React from "react";
 import Link from "next/link";
-import { Compass, ShieldAlert, Heart, ExternalLink, Award } from "lucide-react";
+import { Compass, ShieldAlert, ExternalLink, Award } from "lucide-react";
 
 export function Footer() {
   return (
@@ -34,7 +34,7 @@ export function Footer() {
             </p>
             <div className="flex items-center gap-2 text-xs text-slate-500 dark:text-slate-400 pt-1">
               <Award className="w-4 h-4 text-[#3D43C8] dark:text-[#A5AAFF]" />
-              <span>Hack Days @ <strong>NFSU Nagpur</strong> (Major League Hacking Programme)</span>
+              <span>Developed for Hack Days @ <strong>NFSU Nagpur</strong> (Major League Hacking)</span>
             </div>
           </div>
 
@@ -72,20 +72,14 @@ export function Footer() {
             </ul>
           </div>
 
-          {/* Col 3: Hackathon & Team */}
+          {/* Col 3: Project & Source */}
           <div>
             <h4 className="text-xs font-bold uppercase tracking-wider text-slate-900 dark:text-slate-200 mb-3">
-              Team & Project
+              Project & Source
             </h4>
             <div className="space-y-2 text-xs text-slate-600 dark:text-slate-400">
               <p>
-                <strong className="text-slate-900 dark:text-slate-200">Team:</strong> HackMaster_Restart
-              </p>
-              <p>
-                <strong className="text-slate-900 dark:text-slate-200">Lead:</strong> Ujwal Didpaye
-              </p>
-              <p>
-                <strong className="text-slate-900 dark:text-slate-200">Institution:</strong> G. H. Raisoni College of Engineering, Nagpur
+                A connected healthcare journey coordination platform.
               </p>
               <div className="pt-2">
                 <a
@@ -106,11 +100,9 @@ export function Footer() {
           <p>
             &copy; 2026 AarogyaGo. All demonstration medical data is illustrative.
           </p>
-          <div className="flex items-center gap-1">
-            <span>Crafted with</span>
-            <Heart className="w-3.5 h-3.5 text-rose-500 fill-rose-500" />
-            <span>for NFSU Hack Days</span>
-          </div>
+          <p className="font-semibold text-slate-800 dark:text-slate-200 text-xs sm:text-sm">
+            Made with creativity by Ujwal Didpaye
+          </p>
         </div>
       </div>
     </footer>
